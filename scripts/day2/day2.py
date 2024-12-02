@@ -24,29 +24,27 @@ def check_requirements(row:list, part:int) -> bool:
     test1, diffs = test_one(row)
     difftest = test_two(diffs)
     test2 = difftest.size == 0
-    #First check to see if the report is safe. If it is safe, return True
+    #First check to see if the report is safe. If it is, return True
     if test1 & test2:
         return True
     else:
-        if part == 2:
+        if part == 1:
+            #If part 1 and either condition false.  Return False
+            return False
+        elif part == 2:
             #If its not safe, remove each level and re-run test_one and test_two to check if its safe 
-            #If we find more than two situations where its not safe, return False
-            badcount = 0
+            #I went wrong here by checking if there was only 1 condition.  Apparently its if any line can 
+            #be made safe by one removal it still counts.  Not all. 
             for idx in range(len(row)):
                 temprow = row.copy()
                 temprow.pop(idx)
-                diffs = np.diff(temprow)
+                test1, diffs = test_one(temprow)
                 difftest = test_two(diffs)
-                if difftest.size > 0:
-                    badcount += 1
-                if badcount > 1:
-                    return False
-            #If it passes for less than 1 badcount, return true
-            #! I think i'm missing the case where test1 is False. 
-            return True
-        
-        #If part 1 and either condition false.  Return False        
-        return False
+                test2 = difftest.size == 0
+                if test1 & test2:
+                    return True
+            return False
+
 def problemsolver(arr:list, part:int) -> int:
     safezone = 0
     for row in arr:
@@ -55,7 +53,7 @@ def problemsolver(arr:list, part:int) -> int:
             safezone += 1
     return safezone
 
-@log_time
+@log_time 
 def part_A():
     logger.info("Solving part A")
     #to check your cache status when you need cache nooooow
@@ -102,7 +100,7 @@ def main():
     #Solve part B
     resultB = part_B()
     logger.info(f"part B solution: \n{resultB}\n")
-    # support.submit_answer(DAY, YEAR, 2, resultB)
+    support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
     LOC = support.recurse_dir(f'./scripts/day{DAY}/')
@@ -131,4 +129,4 @@ if __name__ == "__main__":
 
 #Part B Notes
 #Now we can allow one bad case to get through on the second test. 
-#Should be a simple adjustment
+#Should be a simple adjustment but proving difficult. 
