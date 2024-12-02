@@ -32,9 +32,12 @@ def check_requirements(row:list, part:int) -> bool:
             #If part 1 and either condition is false.  Return False
             return False
         elif part == 2:
-            #If its not safe, remove each level and re-run test_one and test_two to check if its safe 
-            #I went wrong here by checking if there was only 1 condition.  Apparently its if any line can 
-            #be made safe by one removal it still counts.  Not all. 
+            #If its not safe, remove each level and re-run test_one and test_two
+            #to check if its safe.
+            #I went wrong here by checking if there was only 1 removal for every
+            #possible index in the temprow.  Apparently its if any line can be
+            #made safe with one level removal it still counts as safe.  Not all
+            #of the level combinations
             for idx in range(len(row)):
                 temprow = row.copy()
                 temprow.pop(idx)
