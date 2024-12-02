@@ -14,7 +14,7 @@ YEAR:int = datetime.now().year
 
 def test_one(row):
     diffs = np.diff(row)
-    test1 = np.all(diffs > 0) | np.all(diffs < 0)
+    test1 = bool(np.all(diffs > 0) | np.all(diffs < 0))
     return test1, diffs
 
 def test_two(diffs)->np.array:
@@ -107,7 +107,7 @@ def main():
     logger.info(f"Lines of code \n{LOC}")
 
     #Delete the cache after submission
-    _877_cache_now(".cache", True)
+    _877_cache_now(".cache", False)
     
 if __name__ == "__main__":
     main()
