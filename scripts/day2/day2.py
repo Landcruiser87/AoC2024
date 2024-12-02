@@ -29,7 +29,7 @@ def check_requirements(row:list, part:int) -> bool:
         return True
     else:
         if part == 1:
-            #If part 1 and either condition false.  Return False
+            #If part 1 and either condition is false.  Return False
             return False
         elif part == 2:
             #If its not safe, remove each level and re-run test_one and test_two to check if its safe 
@@ -100,7 +100,7 @@ def main():
     #Solve part B
     resultB = part_B()
     logger.info(f"part B solution: \n{resultB}\n")
-    support.submit_answer(DAY, YEAR, 2, resultB)
+    # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
     LOC = support.recurse_dir(f'./scripts/day{DAY}/')
