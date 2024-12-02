@@ -34,10 +34,6 @@ def check_requirements(row:list, part:int) -> bool:
         elif part == 2:
             #If its not safe, remove each level and re-run test_one and test_two
             #to check if its safe.
-            #I went wrong here by checking if there was only 1 removal for every
-            #possible index in the temprow.  Apparently its if any line can be
-            #made safe with one level removal it still counts as safe.  Not all
-            #of the level combinations
             for idx in range(len(row)):
                 temprow = row.copy()
                 temprow.pop(idx)
@@ -133,3 +129,7 @@ if __name__ == "__main__":
 #Part B Notes
 #Now we can allow one bad case to get through on the second test. 
 #Should be a simple adjustment but proving difficult. 
+#I went wrong here by checking if there was only 1 removal for every
+#possible index in the temprow.  Apparently its if any line can be
+#made safe with one level removal it still counts as safe.  Not all
+#of the level combinations.  
