@@ -12,12 +12,12 @@ import numpy as np
 DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
 
-def test_one(row):
+def test_one(row) -> tuple:
     diffs = np.diff(row)
     test1 = bool(np.all(diffs > 0) | np.all(diffs < 0))
     return test1, diffs
 
-def test_two(diffs)->np.array:
+def test_two(diffs) -> np.array:
     return np.where((abs(diffs) < 1) | abs(diffs) > 3)[0]
 
 def check_requirements(row:list, part:int) -> bool:
