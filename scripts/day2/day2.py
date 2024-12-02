@@ -12,44 +12,41 @@ import numpy as np
 DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
 
-def test_one(row)->bool:
+def test_one(row):
     diffs = np.diff(row)
     test1 = np.all(diffs > 0) | np.all(diffs < 0)
     return test1, diffs
 
-def test_two(diffs)->bool:
-    difftest = np.where((abs(diffs) < 1) | abs(diffs) > 3)[0]
-    return difftest
+def test_two(diffs)->np.array:
+    return np.where((abs(diffs) < 1) | abs(diffs) > 3)[0]
 
 def check_requirements(row:list, part:int) -> bool:
-    if part == 1:
-        test1, diffs = test_one(row)
-        difftest = test_two(diffs)
-        test2 = difftest.size == 0
-
-    elif part == 2:
-        #Now we can allow one bad level.  
-        #how the f do i trap that.
-        #1.Could go by difftest size to see how many bad levels there were
-        #2.Pop each level in a row and see if it still passes BOTH tests.  Meaning I need to functionalize the two tests
-        badcount = 0
-        for idx in range(len(row)):
-            temprow = row.copy()
-            temprow.pop(idx)
-            test1, diffs = test_one(temprow)
-            difftest = test_two(diffs)
-            if difftest.size >= 1:
-                badcount += 1
-            if badcount > 1:
-                return False
-        
-        return True 
-
+    test1, diffs = test_one(row)
+    difftest = test_two(diffs)
+    test2 = difftest.size == 0
+    #First check to see if the report is safe. If it is safe, return True
     if test1 & test2:
         return True
     else:
+        if part == 2:
+            #If its not safe, remove each level and re-run test_one and test_two to check if its safe 
+            #If we find more than two situations where its not safe, return False
+            badcount = 0
+            for idx in range(len(row)):
+                temprow = row.copy()
+                temprow.pop(idx)
+                diffs = np.diff(temprow)
+                difftest = test_two(diffs)
+                if difftest.size > 0:
+                    badcount += 1
+                if badcount > 1:
+                    return False
+            #If it passes for less than 1 badcount, return true
+            #! I think i'm missing the case where test1 is False. 
+            return True
+        
+        #If part 1 and either condition false.  Return False        
         return False
-
 def problemsolver(arr:list, part:int) -> int:
     safezone = 0
     for row in arr:
