@@ -94,12 +94,12 @@ def main():
 
     #Solve part A
     resultA = part_A()
-    logger.info(f"part A solution: \n{resultA}\n")
+    # logger.info(f"part A solution: \n{resultA}\n")
     # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
     resultB = part_B()
-    logger.info(f"part B solution: \n{resultB}\n")
+    # logger.info(f"part B solution: \n{resultB}\n")
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
