@@ -28,40 +28,48 @@ def problemsolver(arr:list, part:int):
     for command in arr:
         indexes = deque(get_indexes(command, "mul("))
         if part == 2:
-            do = get_indexes(command, "do()")
+            # do = get_indexes(command, "do()")
             dont = get_indexes(command, "don't()")
 
         while len(indexes) > 0:
             start = indexes.popleft()
-            end = 0
-            while start+4+end <= len(command):
-                if (command[start+4+end] == ",") | (command[start+4+end].isnumeric()):
+            end = 4
+            while start+end <= len(command):
+                #If the next char is a comma or isnumeric()
+                if (command[start+end] == ",") | (command[start+end].isnumeric()):
                     end += 1
-                elif (command[start+4+end] == ")") & ("," in command[start:start+4+end]):
+                #If the next char is an end parenthesis AND it has a comma in it)
+                elif (command[start+end] == ")") & ("," in command[start:start+end]):
                     end += 1
                     if part == 2:
                         #If any don't is less than the start. Kick off eval to see if a do is located farther forward
                         if any(x < start for x in dont):
-                            dofilt = list(filter(lambda x:x < start, do))
+                            #Filter the list of don'ts
                             dontfilt = list(filter(lambda x:x < start, dont))
-                            if len(dofilt) > 0:
-                                #if latest do is greater than latest dont, execute mul
-                                if dofilt[-1] > dontfilt[-1]:
-                                    res = execute_command(command[start:start+4+end])
-                                    instructions.append(res)
-                                #If not, continue
+                            # If there is a "do()" inside the latest don't to current position.
+                            # Execute multiplication, if not, break to next start index
+                            if "do()" in command[dontfilt[-1]:start+end]:
+                                # logger.info(f"{command[dontfilt[-1]:start+4+end]}")
+                                res = execute_command(command[start:start+end])
+                                instructions.append(res)
+                                #If not break and continue to next start index
+                        #? I think my any condition here is whats hosing me. 
+                        #if there's any don'ts less than the start, Check 
+                        #for a do in between
+                        #else
+                        #Add it anyway??? 
+                        #somethings f'd up
                         else:
                             #Initial start condition.  If no don't beforehand, execute mul
-                            res = execute_command(command[start:start+4+end])
+                            res = execute_command(command[start:start+end])
                             instructions.append(res)
-                        break
                     else:
-                        res = execute_command(command[start:start+4+end])
+                        res = execute_command(command[start:start+end])
                         instructions.append(res)
-                        break
+                    break
                     
                 else:
-                    # if the next char is not numeric or close parenthesis. break 
+                    # if the next char is not numeric or close parenthesis. break and continue to next index
                     break
     
     return sum(instructions)
