@@ -9,14 +9,16 @@ First export your cookie session with AOC with the google chrome developer tools
 Then make a folder in your root titled `secret` and create a text file within called `cookie.txt`.  
 The .gitignore will ignore all text files / (and other formats) so it won't get loaded into github. 
 
+### ⭐🎄 Results 🎄⭐
+
+| Day | Stars | Solution | Name | Speed Part 1 | Speed Part 2 | LOC |
+| :--- | :----- | :---- | :---------------------------------------------------------------- | ----- | ----- | --- |
+| 01  | ⭐⭐ | [Day1](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day1/day1.py) |[Historian Hysteria](https://adventofcode.com/2024/day/1) | 25 ms | 35 ms | 57 |
+| 02  | ⭐⭐ | [Day2](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day2/day2.py) |[Red-Nosed Reports](https://adventofcode.com/2024/day/2) | 53 ms | 166 ms | 71 |
+
+
+#### For next year
+
 - [ ] Make a function that captures the output and updates the results table in the README. SORCERY :mage: :magic_wand: 
 - [ ] Make a TUI to view and navigate the leaderboard.
     - It looks like you can request a Json payload every 15 minutes (900 seconds) for public and private leaderboards.  Could write to a JSON configs file in utils with last timestamp accessed. easier to maintain that way. Not sure cacheing would help here as we would want immediate leaderboard updates.  
-
-
-### ⭐🎄 Results 🎄⭐
-
-| Day | Stars | Solution | Name | Speed Part A | Speed Part B | LOC |
-| :--- | :----- | :---- | :---------------------------------------------------------------- | ----- | ----- | --- |
-| 01  | ⭐⭐ | [Day1](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day1/day1.py) |[Historian Hysteria](https://adventofcode.com/2024/day/1) | 25 ms | 35 ms | 57 |
-| 02  | ⭐⭐ | [Day2](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day2/day2.py) |[Red-Nosed Reports](https://adventofcode.com/2024/day/2) | 53 ms | 166 ms | 72 |

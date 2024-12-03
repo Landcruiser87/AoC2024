@@ -9,8 +9,8 @@ from datetime import datetime
 import numpy as np
 
 #Set day/year global variables
-DAY:int = datetime.now().day
-YEAR:int = datetime.now().year
+DAY:int = 2 #datetime.now().day
+YEAR:int = 2024 #datetime.now().year
 
 def test_one(row:list) -> tuple:
     diffs = np.diff(row)
