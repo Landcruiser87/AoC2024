@@ -12,12 +12,12 @@ import numpy as np
 DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
 
-def test_one(row) -> tuple:
+def test_one(row:list) -> tuple:
     diffs = np.diff(row)
     test1 = bool(np.all(diffs > 0) | np.all(diffs < 0))
     return test1, diffs
 
-def test_two(diffs) -> np.array:
+def test_two(diffs:np.array) -> np.array:
     locs = np.where((abs(diffs) < 1) | abs(diffs) > 3)[0]
     return locs.size == 0
 
