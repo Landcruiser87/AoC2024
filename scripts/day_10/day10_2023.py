@@ -231,7 +231,7 @@ def main():
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
-    LOC = support.recurse_dir(f'./scripts/day{DAY}/')
+    LOC = support.recurse_dir(f'./scripts/day_{DAY}/')
     logger.info(f"Lines of code \n{LOC}")
 
     #Delete the cache after submission

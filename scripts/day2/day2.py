@@ -18,12 +18,12 @@ def test_one(row) -> tuple:
     return test1, diffs
 
 def test_two(diffs) -> np.array:
-    return np.where((abs(diffs) < 1) | abs(diffs) > 3)[0]
+    locs = np.where((abs(diffs) < 1) | abs(diffs) > 3)[0]
+    return locs.size == 0
 
 def check_requirements(row:list, part:int) -> bool:
     test1, diffs = test_one(row)
-    difftest = test_two(diffs)
-    test2 = difftest.size == 0
+    test2 = test_two(diffs)
     #First check to see if the report is safe. If it is, return True
     if test1 & test2:
         return True
@@ -38,8 +38,7 @@ def check_requirements(row:list, part:int) -> bool:
                 temprow = row.copy()
                 temprow.pop(idx)
                 test1, diffs = test_one(temprow)
-                difftest = test_two(diffs)
-                test2 = difftest.size == 0
+                test2 = test_two(diffs)
                 if test1 & test2:
                     return True
             return False

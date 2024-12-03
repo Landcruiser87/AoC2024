@@ -171,7 +171,7 @@ def pull_puzzle(day:int, year:int, part:int, tellstory:bool=True)-> str:
     if part == 1:
         sampledata = subtext.select("pre")[-1].text
     elif part == 2:
-        # subtext = bs4ob.find_all("article")[0]
+        subtext = bs4ob.find_all("article")[0]
         sampledata = subtext.select("pre")[-1].text
     ###########################################################################
     console.log(f"\n{storytime}")
@@ -247,7 +247,7 @@ def submit_answer(day:int, year:int, part:int, answer:Any=""):
         logger.critical("No Soup for you!!!! No answer submitted")
         return
     
-    logger.warning(f"Posting {answer} for part {part}")
+    logger.warning(f"Posting {answer} for part {part} of {year}")
     url = f"{AOC_URL}/{year}/day/{day}/answer"
     response = requests.post(
         url = url,
@@ -255,8 +255,7 @@ def submit_answer(day:int, year:int, part:int, answer:Any=""):
         cookies = C_IS_4_COOKIE, 
         timeout = 10
     )
-    #TODO - Keep a configs file that can track when the last posting was and to not post another request within x minutes.  I think he has a minute limit on them but I can't quite remember. 
-        #Either way.  Don't hammer his servers. 
+
     #Be nice to the servers
     if response.status_code != 200:
         # If there's an error, log it and return no data
@@ -278,7 +277,7 @@ def submit_answer(day:int, year:int, part:int, answer:Any=""):
                 logger.info("Answer already submitted")
                 break
 
-        #If we don't find success.  We warn
+        #Log the error we're recieving.
         logger.warning(f"{web_text}")
 
 #TODO - Create func that can add rows and / or update a markdown table.   or store it in a dataclass.  I'd like it to be able to add new days and update it as I complete sections.  
