@@ -31,10 +31,10 @@ def problemsolver(arr:list, part:int):
             do = get_indexes(command, "do()")
             dont = get_indexes(command, "don't()")
 
-        while indexes:
+        while len(indexes) > 0:
             start = indexes.popleft()
             end = 0
-            while True:
+            while start+4+end <= len(command):
                 if (command[start+4+end] == ",") | (command[start+4+end].isnumeric()):
                     end += 1
                 elif (command[start+4+end] == ")") & ("," in command[start:start+4+end]):
@@ -45,22 +45,23 @@ def problemsolver(arr:list, part:int):
                             dofilt = list(filter(lambda x:x < start, do))
                             dontfilt = list(filter(lambda x:x < start, dont))
                             if len(dofilt) > 0:
-                                #if latest do is greater than latest dont, add result
+                                #if latest do is greater than latest dont, execute mul
                                 if dofilt[-1] > dontfilt[-1]:
                                     res = execute_command(command[start:start+4+end])
                                     instructions.append(res)
                                 #If not, continue
                         else:
-                            #Initial start condition.  If no don't beforehand, execute
+                            #Initial start condition.  If no don't beforehand, execute mul
                             res = execute_command(command[start:start+4+end])
                             instructions.append(res)
                         break
-
                     else:
                         res = execute_command(command[start:start+4+end])
                         instructions.append(res)
                         break
+                    
                 else:
+                    # if the next char is not numeric or close parenthesis. break 
                     break
     
     return sum(instructions)
