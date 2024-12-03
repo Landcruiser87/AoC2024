@@ -6,13 +6,49 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
+from itertools import cycle
+from collections import deque
 
 #Set day/year global variables
 DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
+def get_indexes(mainstr:str, searchterm:str):
+    res = []
+    idx  = mainstr.find(searchterm)
+    while idx!= -1:
+        res.append(idx)
+        idx = mainstr.find(searchterm, idx + 1)
+    return res
+def execute_command(inst:str):
+    s1, s2 = inst[4:-1].split(",")
+    return (int(s1)*int(s2))
 
 def problemsolver(arr:list, part:int):
-    pass
+    instructions = []
+    for command in arr:
+        indexes = deque(get_indexes(command, "mul("))
+        while indexes:
+            start = indexes.popleft()
+            end = 0
+            while True:
+                if (command[start+4+end] == ",") | (command[start+4+end].isnumeric()):
+                    end += 1
+                elif command[start+4+end] == ")":
+                    end += 1
+                    res = execute_command(command[start:start+4+end])
+                    instructions.append(res)
+                    break
+                else:
+                    break
+    
+    if part == 1:
+        return sum(instructions)
+        
+
+    
+    #1. Find all indexes of "mul("
+    #2. Check the ensueing characters are numeric then a comma, then numeric, then
+        #closing parenthesis
 
 @log_time
 def part_A():
@@ -22,14 +58,14 @@ def part_A():
     _877_cache_now() #Lol. I blame myself
     #Pull puzzle description and testdata
     tellstory, testdata = support.pull_puzzle(DAY, YEAR, 1)
-    console.log(f"{tellstory}")
+    # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 1)
+    testcase = problemsolver(testdata, 1)
     #Assert testcase
-    assert testcase == "", "Test case A failed"
+    assert testcase == 161, "Test case A failed"
     #Solve puzzle with full dataset
-    answerA = "" #problemsolver(data, 1)
+    answerA = problemsolver(data, 1)
     return answerA
 
 @log_time
@@ -76,3 +112,12 @@ if __name__ == "__main__":
 ########################################################
 #Notes
 #Part A Notes
+#Not too bad today.  We've got computer instructions that are garbled and need some 
+#help with decoding.  Our input is a giant string that has mul instructions 
+#buried in them. Our task is to pull out those instructinos, multiply the values,
+# and add them all up.
+#
+#Correct format
+# 
+#mul(X, Y)
+#
