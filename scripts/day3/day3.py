@@ -22,7 +22,7 @@ def part_A():
     _877_cache_now() #Lol. I blame myself
     #Pull puzzle description and testdata
     tellstory, testdata = support.pull_puzzle(DAY, YEAR, 1)
-    # console.log(f"{tellstory}")
+    console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
     testcase = "" #problemsolver(testdata, 1)
@@ -59,8 +59,8 @@ def main():
     # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
-    resultB = part_B()
-    logger.info(f"part B solution: \n{resultB}\n")
+    # resultB = part_B()
+    # logger.info(f"part B solution: \n{resultB}\n")
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
