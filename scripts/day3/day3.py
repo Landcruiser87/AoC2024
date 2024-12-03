@@ -33,7 +33,7 @@ def problemsolver(arr:list, part:int):
             while True:
                 if (command[start+4+end] == ",") | (command[start+4+end].isnumeric()):
                     end += 1
-                elif command[start+4+end] == ")":
+                elif (command[start+4+end] == ")") & ("," in command[start:start+4+end]):
                     end += 1
                     res = execute_command(command[start:start+4+end])
                     instructions.append(res)
@@ -44,11 +44,6 @@ def problemsolver(arr:list, part:int):
     if part == 1:
         return sum(instructions)
         
-
-    
-    #1. Find all indexes of "mul("
-    #2. Check the ensueing characters are numeric then a comma, then numeric, then
-        #closing parenthesis
 
 @log_time
 def part_A():
@@ -95,8 +90,8 @@ def main():
     # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
-    # resultB = part_B()
-    # logger.info(f"part B solution: \n{resultB}\n")
+    resultB = part_B()
+    logger.info(f"part B solution: \n{resultB}\n")
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
@@ -121,3 +116,5 @@ if __name__ == "__main__":
 # 
 #mul(X, Y)
 #
+#Part B notes
+#Now we have a conditional! 
