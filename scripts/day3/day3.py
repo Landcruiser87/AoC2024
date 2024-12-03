@@ -49,7 +49,7 @@ def problemsolver(arr:list, part:int):
                             # If there is a "do()" inside the latest don't to current position.
                             # Execute multiplication, if not, break to next start index
                             if "do()" in command[dontfilt[-1]:start+end]:
-                                # logger.info(f"{command[dontfilt[-1]:start+4+end]}")
+                                logger.info(f"{command[dontfilt[-1]:start+end]}")
                                 res = execute_command(command[start:start+end])
                                 instructions.append(res)
                                 #If not break and continue to next start index
