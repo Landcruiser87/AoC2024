@@ -6,7 +6,6 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
-from itertools import cycle
 from collections import deque
 
 #Set day/year global variables
@@ -15,10 +14,11 @@ YEAR:int = datetime.now().year
 def get_indexes(mainstr:str, searchterm:str):
     res = []
     idx  = mainstr.find(searchterm)
-    while idx!= -1:
+    while idx != -1:
         res.append(idx)
         idx = mainstr.find(searchterm, idx + 1)
     return res
+
 def execute_command(inst:str):
     s1, s2 = inst[4:-1].split(",")
     return (int(s1)*int(s2))
@@ -27,6 +27,10 @@ def problemsolver(arr:list, part:int):
     instructions = []
     for command in arr:
         indexes = deque(get_indexes(command, "mul("))
+        if part == 2:
+            do = get_indexes(command, "do()")
+            dont = get_indexes(command, "don't()")
+
         while indexes:
             start = indexes.popleft()
             end = 0
@@ -35,14 +39,31 @@ def problemsolver(arr:list, part:int):
                     end += 1
                 elif (command[start+4+end] == ")") & ("," in command[start:start+4+end]):
                     end += 1
-                    res = execute_command(command[start:start+4+end])
-                    instructions.append(res)
-                    break
+                    if part == 2:
+                        #If any don't is less than the start. Kick off eval to see if a do is located farther forward
+                        if any(x < start for x in dont):
+                            dofilt = list(filter(lambda x:x < start, do))
+                            dontfilt = list(filter(lambda x:x < start, dont))
+                            if len(dofilt) > 0:
+                                #if latest do is greater than latest dont, add result
+                                if dofilt[-1] > dontfilt[-1]:
+                                    res = execute_command(command[start:start+4+end])
+                                    instructions.append(res)
+                                #If not, continue
+                        else:
+                            #Initial start condition.  If no don't beforehand, execute
+                            res = execute_command(command[start:start+4+end])
+                            instructions.append(res)
+                        break
+
+                    else:
+                        res = execute_command(command[start:start+4+end])
+                        instructions.append(res)
+                        break
                 else:
                     break
     
-    if part == 1:
-        return sum(instructions)
+    return sum(instructions)
         
 
 @log_time
@@ -73,11 +94,11 @@ def part_B():
     # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 2)
+    testcase = problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == "", "Test case B failed"
+    assert testcase == 48, "Test case B failed"
     #Solve puzzle with full dataset
-    answerB = "" #problemsolver(data, 2)
+    answerB = problemsolver(data, 2)
     return answerB
 
 def main():
@@ -117,4 +138,9 @@ if __name__ == "__main__":
 #mul(X, Y)
 #
 #Part B notes
-#Now we have a conditional! 
+#Now we have two new conditionals! 
+#If there is a "do()" command, execute the multiplication
+#If there is a "don't" command, do not execute multiplication
+#
+#Too Low : 68964573
+#Too high : 99812796
