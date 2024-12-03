@@ -34,6 +34,8 @@ def problemsolver(arr:list, part:int):
         while len(indexes) > 0:
             start = indexes.popleft()
             end = 4
+ #Amend this to include start and remove the start + ends. 
+#Your problem might be in the indexing
             while start+end <= len(command):
                 #If the next char is a comma or isnumeric()
                 if (command[start+end] == ",") | (command[start+end].isnumeric()):
