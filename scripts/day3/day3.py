@@ -5,12 +5,13 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
-from datetime import datetime
 from collections import deque
+import time
 
 #Set day/year global variables
-DAY:int = datetime.now().day
-YEAR:int = datetime.now().year
+DAY:int = 3 #datetime.now().day
+YEAR:int = 2024 #datetime.now().year
+
 def get_indexes(mainstr:str, searchterm:str):
     res = []
     idx  = mainstr.find(searchterm)
@@ -40,38 +41,44 @@ def is_valid(command:str, start:int, end:int):
     else:
         return end, False
 
-def problemsolver(arr:list, part:int):
+def problemsolver(command:str, part:int):
     instructions = []
-    for command in arr:
-        indexes = deque(get_indexes(command, "mul("))
-        if part == 2:
-            # do = get_indexes(command, "do()")
-            dont = get_indexes(command, "don't()")
+        #get rid of apostrophies and forward slashes for no fuckery
+    for badactor in ["'", "/"]:
+        command = command.replace(badactor, "")
 
-        while len(indexes) > 0:
-            start = indexes.popleft()
-            end = start + 4
-            end, valid = is_valid(command, start, end)
-            if valid:
-                logger.info(f"{command[start:end]}")
-                if part == 1:
-                    res = exe_mul(command[start:end])
-                    instructions.append(res)
-                elif part == 2:
-                    #If any don't is less than the start. Kick off eval to see if a do is located farther forward
-                    if any(x < start for x in dont):
-                        #Filter the list of don'ts
-                        dontfilt = list(filter(lambda x:x < start, dont))
-                        # If there is a "do()" inside the latest don't to current position.
-                        # Execute multiplication, if not, break to next start index
-                        if "do()" in command[dontfilt[-1]:end]:
-                            # logger.info(f"{command[start:end]}")
-                            res = exe_mul(command[start:end])
-                            instructions.append(res)
-                    else:
-                        #Initial start condition.  If no don't beforehand, execute mul
+    #Make a deque for all the indices of "mul(" we want to analyze
+    indexes = deque(get_indexes(command, "mul("))
+    if part == 2:
+        #If its part 2 grab all the dos and dont indices
+        do = get_indexes(command, "do()")
+        dont = get_indexes(command, "dont()")
+
+    while len(indexes) > 0:
+        start = indexes.popleft()
+        end = start + 4
+        end, valid = is_valid(command, start, end)
+        if valid:
+            if part == 1:
+                res = exe_mul(command[start:end])
+                instructions.append(res)
+            elif part == 2:
+                # console.log(f"{command[start:end]}")
+                if "dont()" in command[:end]:
+                    dontfilt = list(filter(lambda x:x < end, dont))
+                    dotest = "do()" in command[dontfilt[-1]:end]
+                    if dotest:
+                        dofilt = list(filter(lambda x:x < end, do))
+                        dofind = command[dofilt[-1]:end]
+                        # console.log(f"[white]{command[:dofilt[-1]]}[bold green]{dofind}[white]{command[end:]}")
                         res = exe_mul(command[start:end])
                         instructions.append(res)
+                    # else:
+                        # console.log(f"[white]{command[:dontfilt[-1]]}[bold red]{command[dontfilt[-1]:dontfilt[-1]+6]}[bold red]{command[dontfilt[-1]+6:end]}[white]{command[end:]}")
+                else:
+                    # console.log(f"[white]{command[:start]}[bold purple]{command[start:end]}[white]{command[end:]}")
+                    res = exe_mul(command[start:end])
+                    instructions.append(res)
 
     return sum(instructions)
         
@@ -152,5 +159,10 @@ if __name__ == "__main__":
 #If there is a "do()" command, execute the multiplication
 #If there is a "don't" command, do not execute multiplication
 #
-#Too Low : 68964573
-#Too high : 99812796
+#Well after fucking around for way too long.  i realized my input string was
+#getting split on newlines that weren't supposed to be splits. Which would
+#directly effect my ability to see which had do's or don'ts.  
+#
+#Lesson of today??
+#CHECK YOUR INPUTS ANDY
+

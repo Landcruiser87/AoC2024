@@ -132,7 +132,7 @@ dmypy.json
 /__pycache__
 /.vscode
 /.venv
-/secret
+secret/
 /.pytest_cache
 *.log
 *.csv

@@ -70,7 +70,7 @@ with open("./secret/cookie.txt", "r") as f:
 
 cache = percache.Cache(".cache", livesync=True)
 cache.expire = timedelta(hours=1)
-console = Console()
+console = Console(color_system="auto")
 logger = get_logger(console)
 
 
@@ -210,7 +210,7 @@ def pull_inputdata(day:int, year:int)->str:
         return data
 
 #############################  Data Transform Funcs  ########################
-def process_input(textdata:str, testd:bool, split:bool=True)->list:
+def process_input(textdata:str, testd:bool, split:bool=True)->str:
     """Function to process input datasets.  Both testcase and full datasets
 
     Args:
@@ -225,7 +225,7 @@ def process_input(textdata:str, testd:bool, split:bool=True)->list:
         data = textdata.splitlines()
         arr = [x.strip() if x != "" else "" for x in data]
     else:
-        arr = [x.strip() if x != "" else "" for x in textdata]
+        arr = str(textdata.strip())
     if testd:
         console.log("\nSample Data:\n")
         [console.log(f"{td}") for td in arr]
