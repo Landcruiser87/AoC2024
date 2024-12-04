@@ -66,10 +66,9 @@ def problemsolver(command:str, part:int):
                 # console.log(f"{command[start:end]}")
                 if "dont()" in command[:end]:
                     dontfilt = list(filter(lambda x:x < end, dont))
-                    dotest = "do()" in command[dontfilt[-1]:end]
-                    if dotest:
-                        dofilt = list(filter(lambda x:x < end, do))
-                        dofind = command[dofilt[-1]:end]
+                    if "do()" in command[dontfilt[-1]:end]:
+                        # dofilt = list(filter(lambda x:x < end, do))
+                        # dofind = command[dofilt[-1]:end]
                         # console.log(f"[white]{command[:dofilt[-1]]}[bold green]{dofind}[white]{command[end:]}")
                         res = exe_mul(command[start:end])
                         instructions.append(res)
@@ -130,14 +129,14 @@ def main():
     #Solve part B
     resultB = part_B()
     logger.info(f"part B solution: \n{resultB}\n")
-    support.submit_answer(DAY, YEAR, 2, resultB)
+    # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
     LOC = support.recurse_dir(f'./scripts/day{DAY}/')
     logger.info(f"Lines of code \n{LOC}")
 
     #Delete the cache after submission
-    _877_cache_now(".cache", False)
+    _877_cache_now(".cache", True)
     
 if __name__ == "__main__":
     main()

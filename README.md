@@ -15,7 +15,7 @@ The .gitignore will ignore all text files / (and other formats) so it won't get 
 | :--- | :----- | :---- | :---------------------------------------------------------------- | ----- | ----- | --- |
 | 01  | ⭐⭐ | [Day1](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day1/day1.py) |[Historian Hysteria](https://adventofcode.com/2024/day/1) | 25 ms | 35 ms | 57 |
 | 02  | ⭐⭐ | [Day2](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day2/day2.py) |[Red-Nosed Reports](https://adventofcode.com/2024/day/2) | 53 ms | 166 ms | 71 |
-| 03  |  | [Day3](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day3/day3.py) |[Mull it over](https://adventofcode.com/2024/day/3) | ms | ms | ? |
+| 03  | ⭐⭐ | [Day3](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day3/day3.py) |[Mull it over](https://adventofcode.com/2024/day/3) | 28 ms | 37 ms | 101 |
 
 #### For next year
 
