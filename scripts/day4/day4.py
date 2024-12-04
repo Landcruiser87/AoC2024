@@ -6,7 +6,9 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
-from collections import deque
+from rich.text import Text
+from rich.table import Table
+import time
 
 #Set day/year global variables
 DAY:int = datetime.now().day
@@ -18,6 +20,21 @@ DIRLIST = [
 ]
 
 def problemsolver(grid:list, part:int):
+    def print_grid(x:int, y:int):
+        console.clear()
+        table = Table(show_header=False, show_lines=False, box=None)
+        [table.add_column(justify="center") for x in range(len(grid[0]))]
+        
+        for idx, row in enumerate(grid):
+            trow = []
+            for idy, val in enumerate(row):
+                if idx == x and idy == y: 
+                    trow.append(Text(val, style="bold red"))
+                else:
+                    trow.append(val)
+            table.add_row(*trow)
+        console.print(table)
+
     def onboard(point:tuple) -> bool:
         x = point[0]
         y = point[1]
@@ -30,7 +47,7 @@ def problemsolver(grid:list, part:int):
             return True
     
     def dfs(grid:int, x:int, y:int, word:str, index:int, visited:set):
-        #First check terminate conditions
+        #Check terminate conditions
         #1. If its on the board
         cond1 = not onboard((x, y))
         if cond1:
@@ -49,9 +66,11 @@ def problemsolver(grid:list, part:int):
             return True
         
         visited.add((x, y))
+        print_grid(x, y)
 
         for dx, dy in DIRLIST:
             if dfs(grid, x + dx, y + dy, word, index + 1, visited):
+                #fix here to continue searching
                 return True
         
         visited.remove((x,y))
@@ -61,7 +80,7 @@ def problemsolver(grid:list, part:int):
     searchterm = "XMAS"
     visited = set()
     for x in range(len(grid)):
-        for y in range(len(grid[0])):
+        for y in range(len(grid[x])):
             if grid[x][y] == "X":
                 if dfs(grid, x, y, searchterm, 0, visited):
                     count += 1
@@ -81,7 +100,7 @@ def part_A():
     #Solve puzzle w/testcase
     testcase = problemsolver(testdata, 1)
     #Assert testcase
-    assert testcase == 18, "Test case A failed"
+    assert testcase == 18, f"Test case A failed returned:{testcase}"
     #Solve puzzle with full dataset
     answerA = "" #problemsolver(data, 1)
     return answerA
