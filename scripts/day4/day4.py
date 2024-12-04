@@ -11,25 +11,20 @@ from collections import deque
 #Set day/year global variables
 DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
+DIRLIST = [
+    (-1, -1), (-1, 0), (-1, 1),  #one row up
+    (0, -1), (0, 1),             #left and right of POI
+    (1, -1), (1, 0), (1, 1)      #one row down
+]
 
 def problemsolver(grid:list, part:int):
-    def find_starts()->list:
-        marks = []
-        for x in range(len(grid)):
-            for y in range(len(grid[0])):
-                if grid[x][y] == "X":
-                    marks.append((x, y))
-        return marks
-    
     def onboard(point:tuple) -> bool:
         x = point[0]
         y = point[1]
         height, width  = len(grid), len(grid[0])
         if (x < 0) | (x >= height):
-            # logger.warning(f"({x}, {y}) not on board")
             return False
         elif (y < 0) | (y >= width):
-            # logger.warning(f"({x}, {y}) not on board")
             return False
         else:
             return True
@@ -37,47 +32,41 @@ def problemsolver(grid:list, part:int):
     def dfs(grid:int, x:int, y:int, word:str, index:int, visited:set):
         #First check terminate conditions
         #1. If its on the board
-        cond1 = onboard((x, y))
+        cond1 = not onboard((x, y))
+        if cond1:
+            return False
+
         #2. If we've already visited
         cond2 = (x, y) in visited
         #3. If if the grid letter is not equal to the next index
         cond3 = grid[x][y] != word[index]
-
-        if cond1 | cond2 | cond3: #| found == True
+        
+        if cond2 | cond3:
             return False
         
         #Separate term to see if we've found the word
         if index == len(word) - 1:
-            global found 
-            found = True
             return True
         
         visited.add((x, y))
 
-        for direct in dirlist:
-            if dfs(grid, x+direct[0], y+direct[1], word, index + 1, visited):
+        for dx, dy in DIRLIST:
+            if dfs(grid, x + dx, y + dy, word, index + 1, visited):
                 return True
         
         visited.remove((x,y))
         return False
-    
-    starts = deque(find_starts())
-    dirlist = [
-        (-1, -1), (-1, 0), (-1, 1),  #one row up
-        (0, -1), (0, 1),             #left and right of center
-        (1, -1), (1, 0), (1, 1)      #one row down
-    ]
-    
-    while starts:
-        #Start point for every X
-        loc = starts.popleft()
-        searchterm = "XMAS"
-        global found
-        found = False
-        visited = set()
-        while not found:
-            dfs(grid, loc[0], loc[1], searchterm, 0, visited)
 
+    count = 0
+    searchterm = "XMAS"
+    visited = set()
+    for x in range(len(grid)):
+        for y in range(len(grid[0])):
+            if grid[x][y] == "X":
+                if dfs(grid, x, y, searchterm, 0, visited):
+                    count += 1
+    
+    return count
         
 @log_time
 def part_A():
@@ -155,6 +144,7 @@ if __name__ == "__main__":
 #Initial idea
 #Find all the X locations (aka starts) in the grid
 #Have an iterative scan in all 8 directions around a particular point. 
+#Run it in a DFS search
 #Must haves
     #I will need to test if its on the board
     #I will probably need to use a cycle to make sure
