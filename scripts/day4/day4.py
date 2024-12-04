@@ -6,6 +6,7 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
+from collections import deque
 
 #Set day/year global variables
 DAY:int = datetime.now().day
@@ -15,12 +16,14 @@ def problemsolver(arr:list, part:int):
     def find_starts()->list:
         marks = []
         for x in range(len(arr)):
-            for y in range(len(arr)):
+            for y in range(len(arr[0])):
                 if arr[x][y] == "X":
                     marks.append((x, y))
         return marks
     
-    def onboard(x:int, y:int) -> bool:
+    def onboard(point:tuple) -> bool:
+        x = point[0]
+        y = point[1]
         height, width  = len(arr), len(arr[0])
         if (x < 0) | (x >= height):
             # logger.warning(f"({x}, {y}) not on board")
@@ -30,8 +33,32 @@ def problemsolver(arr:list, part:int):
             return False
         else:
             return True
-    starts = find_starts()
     
+    def dfs(arr, start, visited = None):
+        if visited == None:
+            visited = set()
+        visited.add(start)
+
+        for next in arr[start] - visited:
+            dfs(arr, next, visited)
+        return visited
+    
+    starts = deque(find_starts())
+    dirlist = [
+        (-1, -1), (-1, 0), (-1, 1),  #one row up
+        (0, -1), (0, 1),             #left and right of center
+        (1, -1), (1, 0), (1, 1)      #one row down
+    ]
+    
+    while starts:
+        #Start point for every X
+        loc = starts.popleft()
+        #Cycle to next letter
+        searchterm = "XMAS"
+        found = False
+        while not found:
+            dfs(loc, loc)
+
 @log_time
 def part_A():
     logger.info("Solving part A")

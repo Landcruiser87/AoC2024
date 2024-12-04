@@ -51,7 +51,7 @@ def problemsolver(command:str, part:int):
     indexes = deque(get_indexes(command, "mul("))
     if part == 2:
         #If its part 2 grab all the dos and dont indices
-        do = get_indexes(command, "do()")
+        # do = get_indexes(command, "do()")
         dont = get_indexes(command, "dont()")
 
     while len(indexes) > 0:
