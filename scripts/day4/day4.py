@@ -12,19 +12,19 @@ from collections import deque
 DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
 
-def problemsolver(arr:list, part:int):
+def problemsolver(grid:list, part:int):
     def find_starts()->list:
         marks = []
-        for x in range(len(arr)):
-            for y in range(len(arr[0])):
-                if arr[x][y] == "X":
+        for x in range(len(grid)):
+            for y in range(len(grid[0])):
+                if grid[x][y] == "X":
                     marks.append((x, y))
         return marks
     
     def onboard(point:tuple) -> bool:
         x = point[0]
         y = point[1]
-        height, width  = len(arr), len(arr[0])
+        height, width  = len(grid), len(grid[0])
         if (x < 0) | (x >= height):
             # logger.warning(f"({x}, {y}) not on board")
             return False
@@ -34,14 +34,32 @@ def problemsolver(arr:list, part:int):
         else:
             return True
     
-    def dfs(arr, start, visited = None):
-        if visited == None:
-            visited = set()
-        visited.add(start)
+    def dfs(grid:int, x:int, y:int, word:str, index:int, visited:set):
+        #First check terminate conditions
+        #1. If its on the board
+        cond1 = onboard((x, y))
+        #2. If we've already visited
+        cond2 = (x, y) in visited
+        #3. If if the grid letter is not equal to the next index
+        cond3 = grid[x][y] != word[index]
 
-        for next in arr[start] - visited:
-            dfs(arr, next, visited)
-        return visited
+        if cond1 | cond2 | cond3: #| found == True
+            return False
+        
+        #Separate term to see if we've found the word
+        if index == len(word) - 1:
+            global found 
+            found = True
+            return True
+        
+        visited.add((x, y))
+
+        for direct in dirlist:
+            if dfs(grid, x+direct[0], y+direct[1], word, index + 1, visited):
+                return True
+        
+        visited.remove((x,y))
+        return False
     
     starts = deque(find_starts())
     dirlist = [
@@ -53,12 +71,14 @@ def problemsolver(arr:list, part:int):
     while starts:
         #Start point for every X
         loc = starts.popleft()
-        #Cycle to next letter
         searchterm = "XMAS"
+        global found
         found = False
+        visited = set()
         while not found:
-            dfs(loc, loc)
+            dfs(grid, loc[0], loc[1], searchterm, 0, visited)
 
+        
 @log_time
 def part_A():
     logger.info("Solving part A")
