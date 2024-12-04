@@ -19,9 +19,26 @@ def get_indexes(mainstr:str, searchterm:str):
         idx = mainstr.find(searchterm, idx + 1)
     return res
 
-def execute_command(inst:str):
+def exe_mul(inst:str):
     s1, s2 = inst[4:-1].split(",")
     return (int(s1)*int(s2))
+
+def is_valid(command:str, start:int, end:int):
+    while True:
+        #If the next char is a comma or isnumeric()
+        if (command[end] == ",") | (command[end].isnumeric()):
+            end += 1
+        #If the next char is an end parenthesis AND it has a comma in it)
+        elif (command[end] == ")") & ("," in command[start:end]):
+            end += 1
+            break
+        else:
+            break
+
+    if command[start:end][-1] == ")":
+        return end, True
+    else:
+        return end, False
 
 def problemsolver(arr:list, part:int):
     instructions = []
@@ -33,45 +50,29 @@ def problemsolver(arr:list, part:int):
 
         while len(indexes) > 0:
             start = indexes.popleft()
-            end = 4
-            while start+end <= len(command):
-                #If the next char is a comma or isnumeric()
-                if (command[start+end] == ",") | (command[start+end].isnumeric()):
-                    end += 1
-                #If the next char is an end parenthesis AND it has a comma in it)
-                elif (command[start+end] == ")") & ("," in command[start:start+end]):
-                    end += 1
-                    if part == 2:
-                        #If any don't is less than the start. Kick off eval to see if a do is located farther forward
-                        if any(x < start for x in dont):
-                            #Filter the list of don'ts
-                            dontfilt = list(filter(lambda x:x < start, dont))
-                            # If there is a "do()" inside the latest don't to current position.
-                            # Execute multiplication, if not, break to next start index
-                            if "do()" in command[dontfilt[-1]:start+end]:
-                                logger.info(f"{command[dontfilt[-1]:start+end]}")
-                                res = execute_command(command[start:start+end])
-                                instructions.append(res)
-                                #If not break and continue to next start index
-                        #? I think my any condition here is whats hosing me. 
-                        #if there's any don'ts less than the start, Check 
-                        #for a do in between
-                        #else
-                        #Add it anyway??? 
-                        #somethings f'd up
-                        else:
-                            #Initial start condition.  If no don't beforehand, execute mul
-                            res = execute_command(command[start:start+end])
+            end = start + 4
+            end, valid = is_valid(command, start, end)
+            if valid:
+                logger.info(f"{command[start:end]}")
+                if part == 1:
+                    res = exe_mul(command[start:end])
+                    instructions.append(res)
+                elif part == 2:
+                    #If any don't is less than the start. Kick off eval to see if a do is located farther forward
+                    if any(x < start for x in dont):
+                        #Filter the list of don'ts
+                        dontfilt = list(filter(lambda x:x < start, dont))
+                        # If there is a "do()" inside the latest don't to current position.
+                        # Execute multiplication, if not, break to next start index
+                        if "do()" in command[dontfilt[-1]:end]:
+                            # logger.info(f"{command[start:end]}")
+                            res = exe_mul(command[start:end])
                             instructions.append(res)
                     else:
-                        res = execute_command(command[start:start+end])
+                        #Initial start condition.  If no don't beforehand, execute mul
+                        res = exe_mul(command[start:end])
                         instructions.append(res)
-                    break
-                    
-                else:
-                    # if the next char is not numeric or close parenthesis. break and continue to next index
-                    break
-    
+
     return sum(instructions)
         
 
@@ -122,7 +123,7 @@ def main():
     #Solve part B
     resultB = part_B()
     logger.info(f"part B solution: \n{resultB}\n")
-    # support.submit_answer(DAY, YEAR, 2, resultB)
+    support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
     LOC = support.recurse_dir(f'./scripts/day{DAY}/')
