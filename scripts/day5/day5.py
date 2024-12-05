@@ -12,7 +12,7 @@ DAY:int = 5 #datetime.now().day
 YEAR:int = 2024 #datetime.now().year
 
 def problemsolver(arr:list, part:int):
-    def parse_input(arr:list):
+    def parse_input(arr:list)->tuple:
         rules = {}
         splitidx = arr.index("")
         ruleset = arr[:splitidx]
@@ -29,7 +29,7 @@ def problemsolver(arr:list, part:int):
 
         return rules, orders
 
-    def in_order(page_updates:list):
+    def in_order(page_updates:list)->bool:
         #Iterate the orders list
         for idx, testloc in enumerate(page_updates):
             #Grab the rules for that number
@@ -44,7 +44,7 @@ def problemsolver(arr:list, part:int):
                         return False
         return True
     
-    def nothingcompares_toyou(a, b):
+    def nothingcompares_toyou(a:int, b:int)->int:
         # console.log(f"compare {a} and {b}")
         for key, val in rules.items():
             if a == key: 
@@ -55,7 +55,7 @@ def problemsolver(arr:list, part:int):
                     return -1
         return 0
         
-    def put_in_order(order:list):
+    def put_in_order(order:list)->list:
         return sorted(order, key=cmp_to_key(nothingcompares_toyou))
 
     rules, orders = parse_input(arr)
