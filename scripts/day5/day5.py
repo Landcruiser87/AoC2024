@@ -6,6 +6,7 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
+from collections import deque
 
 #Set day/year global variables
 DAY:int = datetime.now().day
@@ -21,20 +22,34 @@ def problemsolver(arr:list, part:int):
         orders = [list(map(int, order)) for order in orders]
         for rule in ruleset:
             left, right = rule.split("|")
-            if not left in rules.keys():
-                rules[int(left)] = int(right)
-                
+            left, right = int(left), int(right)
+            if left in rules.keys():
+                rules[left].append(right)
+            else:
+                rules[left] = [right]
+
         return rules, orders
     
-    def is_in_order(rules:dict, order:list):
-        pass
+    # def follow_rules():
+    #     pass
+
+    def in_order(rules:dict, orders:list):
+        for idx, testloc in enumerate(orders):
+            pagerules = rules.get(testloc)
+            if pagerules:
+                for rule in pagerules:
+                    if rule in order:
+                        if not idx < order.index(rule):
+                            return False
+        return True
 
     rules, orders = parse_input(arr)
     middles = []
     for order in orders:
-        if is_in_order(rules, order):
+        if in_order(rules, order):
             middles.append(order[len(order)//2])
 
+    return sum(middles)
 
 
 @log_time
@@ -52,7 +67,7 @@ def part_A():
     #Assert testcase
     assert testcase == 143, f"Test case A failed returned:{testcase}"
     #Solve puzzle with full dataset
-    answerA = "" #problemsolver(data, 1)
+    answerA = problemsolver(data, 1)
     return answerA
 
 @log_time
@@ -65,11 +80,11 @@ def part_B():
     # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 2)
+    testcase = problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == "", f"Test case B failed returned:{testcase}"
+    assert testcase == 123, f"Test case B failed returned:{testcase}"
     #Solve puzzle with full dataset
-    answerB = "" #problemsolver(data, 2)
+    answerB = problemsolver(data, 2)
     return answerB
 
 def main():
@@ -82,8 +97,8 @@ def main():
     # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
-    # resultB = part_B()
-    # logger.info(f"part B solution: \n{resultB}\n")
+    resultB = part_B()
+    logger.info(f"part B solution: \n{resultB}\n")
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
@@ -111,6 +126,7 @@ if __name__ == "__main__":
     #Our first input is a bunch of instructions that tell us 
     #if an update includes both page X and Y.  
     #Then X ust be printed before Y at some point
+    #[x] - Collapse those into a dict of lists
 
 # Rule 2
     #Rule 1 helps us establish the rules of order.  The second portion of the input
