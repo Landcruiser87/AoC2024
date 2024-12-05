@@ -168,7 +168,7 @@ def pull_puzzle(day:int, year:int, part:int, tellstory:bool=True)-> str:
     
     ###################  CHANGE THESE TO CHANGE TESTCASE TABLES retrieved ##############
     if part == 1:
-        sampledata = subtext.select("pre")[-3].text
+        sampledata = subtext.select("pre")[-2].text
     elif part == 2:
         # subtext = bs4ob.find_all("article")[0]
         sampledata = subtext.select("pre")[-1].text

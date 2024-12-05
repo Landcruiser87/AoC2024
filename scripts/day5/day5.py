@@ -12,7 +12,30 @@ DAY:int = datetime.now().day
 YEAR:int = datetime.now().year
 
 def problemsolver(arr:list, part:int):
-    pass
+    def parse_input(arr:list):
+        rules = {}
+        splitidx = arr.index("")
+        ruleset = arr[:splitidx]
+        orders = arr[splitidx+1:]
+        orders = [order.split(",") for order in orders]
+        orders = [list(map(int, order)) for order in orders]
+        for rule in ruleset:
+            left, right = rule.split("|")
+            if not left in rules.keys():
+                rules[int(left)] = int(right)
+                
+        return rules, orders
+    
+    def is_in_order(rules:dict, order:list):
+        pass
+
+    rules, orders = parse_input(arr)
+    middles = []
+    for order in orders:
+        if is_in_order(rules, order):
+            middles.append(order[len(order)//2])
+
+
 
 @log_time
 def part_A():
@@ -22,7 +45,7 @@ def part_A():
     _877_cache_now() #Lol. I blame myself
     #Pull puzzle description and testdata
     tellstory, testdata = support.pull_puzzle(DAY, YEAR, 1)
-    console.log(f"{tellstory}")
+    # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
     testcase = problemsolver(testdata, 1)
@@ -83,4 +106,17 @@ if __name__ == "__main__":
     #X must be printed at some point before Y
     
 #Ok so this is tricky but i think doable with minimal libraries. 
-#
+
+# Rule 1
+    #Our first input is a bunch of instructions that tell us 
+    #if an update includes both page X and Y.  
+    #Then X ust be printed before Y at some point
+
+# Rule 2
+    #Rule 1 helps us establish the rules of order.  The second portion of the input
+    #has the desired printed pages.  
+    #Our job is to see which lines are in the correct order. 
+
+# Rule 3 
+    #Of the rulesets in part 2 that are in order.  Add up the middle numbers of each sequence. 
+    #Must mean they're all odd lengthed?
