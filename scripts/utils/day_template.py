@@ -44,7 +44,7 @@ def part_B():
     #Solve puzzle w/testcase
     testcase = "" #problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == "", f"Test case A failed returned:{testcase}"
+    assert testcase == "", f"Test case B failed returned:{testcase}"
     #Solve puzzle with full dataset
     answerB = "" #problemsolver(data, 2)
     return answerB

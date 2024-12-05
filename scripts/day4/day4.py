@@ -53,17 +53,17 @@ def problemsolver(grid:list, part:int):
         if len(word) == 0:
             return True
 
-        cond1 = not onboard((x, y))
-        if cond1:
+        #2.See if its on the board
+        if not onboard((x, y)):
             return False
 
         #3. If if the grid letter is not equal to the next index
-        cond3 = grid[x][y] != word[0]
-        if cond3:
+        if grid[x][y] != word[0]:
             return False
-        
-        return is_xmas(grid, x+delt[0], y+delt[1], delt, word[1:])
-
+        if part == 1:
+            return is_xmas(grid, x+delt[0], y+delt[1], delt, word[1:])
+        if part == 2:
+            return True
 
     def look_for_xmas(grid, x, y, searchterm):
         count = 0
@@ -71,14 +71,28 @@ def problemsolver(grid:list, part:int):
             if is_xmas(grid, x, y, delt, list(searchterm)):
                 count += 1
         return count
+    
+    def look_diag(grid, x, y, delt):
+        pass
 
+    def look_for_mas(grid, x, y, searchterm):
+        count = 0
+        for delt in DIRLIST:
+            if look_diag(grid, x, y, delt, list(searchterm)):
+                return 1
+        return 0
+    
     count = 0
-    searchterm = "XMAS"
     for x in range(len(grid)):
         for y in range(len(grid[x])):
-            if grid[x][y] == "X":
-                count += look_for_xmas(grid, x, y, searchterm)
-    
+            if part == 1:
+                if grid[x][y] == "X":
+                    searchterm = "XMAS"
+                    count += look_for_xmas(grid, x, y, searchterm)
+            if part == 2:
+                if grid[x][y] == "A":
+                    searchterm = "MAS"
+                    count += look_for_mas(grid, x, y, searchterm)
     return count
         
 @log_time
@@ -111,7 +125,7 @@ def part_B():
     #Solve puzzle w/testcase
     testcase = problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == 9, f"Test case A failed returned:{testcase}"
+    assert testcase == 9, f"Test case B failed returned:{testcase}"
     #Solve puzzle with full dataset
     answerB = "" #problemsolver(data, 2)
     return answerB
