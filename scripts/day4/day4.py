@@ -34,6 +34,7 @@ def problemsolver(grid:list, part:int):
                     trow.append(val)
             table.add_row(*trow)
         console.print(table)
+        time.sleep(1)
 
     def onboard(point:tuple) -> bool:
         x = point[0]
@@ -46,44 +47,37 @@ def problemsolver(grid:list, part:int):
         else:
             return True
     
-    def dfs(grid:int, x:int, y:int, word:str, index:int, visited:set):
-        #Check terminate conditions
-        #1. If its on the board
+    def is_xmas(grid:int, x:int, y:int, delt:tuple, word:list):
+        #Terminate conditions
+        #Check to see if we've reached the end of XMAS
+        if len(word) == 0:
+            return True
+
         cond1 = not onboard((x, y))
         if cond1:
             return False
 
-        #2. If we've already visited
-        cond2 = (x, y) in visited
         #3. If if the grid letter is not equal to the next index
-        cond3 = grid[x][y] != word[index]
-        
-        if cond2 | cond3:
+        cond3 = grid[x][y] != word[0]
+        if cond3:
             return False
         
-        #Separate term to see if we've found the word
-        if index == len(word) - 1:
-            return True
-        
-        visited.add((x, y))
-        print_grid(x, y)
+        return is_xmas(grid, x+delt[0], y+delt[1], delt, word[1:])
 
-        for dx, dy in DIRLIST:
-            if dfs(grid, x + dx, y + dy, word, index + 1, visited):
-                #fix here to continue searching
-                return True
-        
-        visited.remove((x,y))
-        return False
+
+    def look_for_xmas(grid, x, y, searchterm):
+        count = 0
+        for delt in DIRLIST:
+            if is_xmas(grid, x, y, delt, list(searchterm)):
+                count += 1
+        return count
 
     count = 0
     searchterm = "XMAS"
-    visited = set()
     for x in range(len(grid)):
         for y in range(len(grid[x])):
             if grid[x][y] == "X":
-                if dfs(grid, x, y, searchterm, 0, visited):
-                    count += 1
+                count += look_for_xmas(grid, x, y, searchterm)
     
     return count
         
@@ -102,7 +96,7 @@ def part_A():
     #Assert testcase
     assert testcase == 18, f"Test case A failed returned:{testcase}"
     #Solve puzzle with full dataset
-    answerA = "" #problemsolver(data, 1)
+    answerA = problemsolver(data, 1)
     return answerA
 
 @log_time
@@ -115,9 +109,9 @@ def part_B():
     # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 2)
+    testcase = problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == "", "Test case B failed"
+    assert testcase == 9, f"Test case A failed returned:{testcase}"
     #Solve puzzle with full dataset
     answerB = "" #problemsolver(data, 2)
     return answerB
@@ -132,8 +126,8 @@ def main():
     # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
-    # resultB = part_B()
-    # logger.info(f"part B solution: \n{resultB}\n")
+    resultB = part_B()
+    logger.info(f"part B solution: \n{resultB}\n")
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
