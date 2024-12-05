@@ -89,9 +89,8 @@ def problemsolver(grid:list, part:int):
         for y in range(len(grid[x])):
             if part == 1:
                 if grid[x][y] == "X":
-                    searchterm = "XMAS"
-                    count += look_for_xmas(grid, x, y, searchterm)
-            if part == 2:
+                    count += look_for_xmas(grid, x, y, "XMAS")
+            elif part == 2:
                 if grid[x][y] == "A":
                     if look_for_mas(grid, x, y):
                         count += 1
@@ -151,7 +150,7 @@ def main():
     logger.info(f"Lines of code \n{LOC}")
 
     #Delete the cache after submission
-    _877_cache_now(".cache", False)
+    _877_cache_now(".cache", True)
     
 if __name__ == "__main__":
     main()
@@ -178,3 +177,7 @@ if __name__ == "__main__":
     #I will need to test if its on the board
     #I will probably need to use a cycle to make sure
     #my progression stays correct. 
+
+#Adjust lines 
+#170 -> -3
+#174 -> -1
