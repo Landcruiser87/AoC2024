@@ -8,7 +8,6 @@ from utils import support
 from datetime import datetime
 from rich.text import Text
 from rich.table import Table
-import time
 
 #Set day/year global variables
 DAY:int = 4 #datetime.now().day
@@ -20,21 +19,21 @@ DIRLIST = [
 ]
 
 def problemsolver(grid:list, part:int):
-    def print_grid(x:int, y:int):
-        console.clear()
-        table = Table(show_header=False, show_lines=False, box=None)
-        [table.add_column(justify="center") for x in range(len(grid[0]))]
+    # def print_grid(x:int, y:int):
+    #     console.clear()
+    #     table = Table(show_header=False, show_lines=False, box=None)
+    #     [table.add_column(justify="center") for x in range(len(grid[0]))]
         
-        for idx, row in enumerate(grid):
-            trow = []
-            for idy, val in enumerate(row):
-                if idx == x and idy == y: 
-                    trow.append(Text(val, style="bold red"))
-                else:
-                    trow.append(val)
-            table.add_row(*trow)
-        console.print(table)
-        time.sleep(1)
+    #     for idx, row in enumerate(grid):
+    #         trow = []
+    #         for idy, val in enumerate(row):
+    #             if idx == x and idy == y: 
+    #                 trow.append(Text(val, style="bold red"))
+    #             else:
+    #                 trow.append(val)
+    #         table.add_row(*trow)
+    #     console.print(table)
+    #     time.sleep(1)
 
     def onboard(point:tuple) -> bool:
         x = point[0]
@@ -145,7 +144,7 @@ def main():
     #Solve part B
     resultB = part_B()
     logger.info(f"part B solution: \n{resultB}\n")
-    support.submit_answer(DAY, YEAR, 2, resultB)
+    # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
     LOC = support.recurse_dir(f'./scripts/day{DAY}/')
