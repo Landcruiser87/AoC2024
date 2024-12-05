@@ -7,6 +7,7 @@ from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
 from collections import deque
+from functools import cmp_to_key
 
 #Set day/year global variables
 DAY:int = datetime.now().day
@@ -29,25 +30,48 @@ def problemsolver(arr:list, part:int):
                 rules[left] = [right]
 
         return rules, orders
-    
-    # def follow_rules():
-    #     pass
 
-    def in_order(rules:dict, orders:list):
+    def in_order(orders:list):
+        #Iterate the orders list
         for idx, testloc in enumerate(orders):
+            #Grab the rules for that number
             pagerules = rules.get(testloc)
+            #If there are rules proceed
             if pagerules:
+                #For each rule in pagerules
                 for rule in pagerules:
-                    if rule in order:
-                        if not idx < order.index(rule):
-                            return False
+                    #If that rule is in the order (and the key is in the order which we already know it is)
+                    #If the current order idx is not less than the rule's index, flag as false
+                    if (rule in order) and (not idx < order.index(rule)):
+                        return False
         return True
+    def nothingcompares_toyou(a, b):
+        # console.log(f"compare {a} and {b}")
+        for key, val in rules.items():
+            if a == key: 
+                if b in val:
+                    return 1
+            if b == key: 
+                if a in val:
+                    return -1
+        return 0
+        
+    def put_in_order(orders:list):
+        # console.log(f"{orders}")
+        ordered = sorted(orders, key=cmp_to_key(nothingcompares_toyou))
+        # console.log(f"{ordered}")
+        return ordered
 
     rules, orders = parse_input(arr)
     middles = []
     for order in orders:
-        if in_order(rules, order):
-            middles.append(order[len(order)//2])
+        if part == 1:
+            if in_order(order):
+                middles.append(order[len(order)//2])
+        elif part == 2:
+            if not in_order(order):
+                orderfixed = put_in_order(order)
+                middles.append(orderfixed[len(orderfixed)//2])
 
     return sum(middles)
 
@@ -136,3 +160,6 @@ if __name__ == "__main__":
 # Rule 3 
     #Of the rulesets in part 2 that are in order.  Add up the middle numbers of each sequence. 
     #Must mean they're all odd lengthed?
+
+# Part B:
+# Fix the out of order rows
