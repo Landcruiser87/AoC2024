@@ -29,18 +29,18 @@ def problemsolver(arr:list, part:int):
 
         return rules, orders
 
-    def in_order(orders:list):
+    def in_order(page_updates:list):
         #Iterate the orders list
-        for idx, testloc in enumerate(orders):
+        for idx, testloc in enumerate(page_updates):
             #Grab the rules for that number
             pagerules = rules.get(testloc)
             #If there are rules proceed
             if pagerules:
                 #For each rule in pagerules
                 for rule in pagerules:
-                    #If that rule is in the order (and the key is in the order which we already know it is)
-                    #If the current order idx is not less than the rule's index, flag as false
-                    if (rule in order) and (not idx < order.index(rule)):
+                    #If that rule is in the page_updates (and the key is in the page_updates which we already know it is)
+                    #If the current page_updates idx is not less than the rule's index, flag as false
+                    if (rule in page_updates) and (not idx < page_updates.index(rule)):
                         return False
         return True
     
@@ -55,8 +55,8 @@ def problemsolver(arr:list, part:int):
                     return -1
         return 0
         
-    def put_in_order(orders:list):
-        return sorted(orders, key=cmp_to_key(nothingcompares_toyou))
+    def put_in_order(order:list):
+        return sorted(order, key=cmp_to_key(nothingcompares_toyou))
 
     rules, orders = parse_input(arr)
     middles = []
