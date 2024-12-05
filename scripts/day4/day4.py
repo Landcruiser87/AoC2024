@@ -11,8 +11,8 @@ from rich.table import Table
 import time
 
 #Set day/year global variables
-DAY:int = datetime.now().day
-YEAR:int = datetime.now().year
+DAY:int = 4 #datetime.now().day
+YEAR:int = 2024 #datetime.now().year
 DIRLIST = [
     (-1, -1), (-1, 0), (-1, 1),  #one row up
     (0, -1), (0, 1),             #left and right of POI
@@ -47,7 +47,7 @@ def problemsolver(grid:list, part:int):
         else:
             return True
     
-    def is_xmas(grid:int, x:int, y:int, delt:tuple, word:list):
+    def is_xmas(grid:int, x:int, y:int, delt:tuple=None, word:list=None):
         #Terminate conditions
         #Check to see if we've reached the end of XMAS
         if len(word) == 0:
@@ -60,9 +60,10 @@ def problemsolver(grid:list, part:int):
         #3. If if the grid letter is not equal to the next index
         if grid[x][y] != word[0]:
             return False
+        
         if part == 1:
             return is_xmas(grid, x+delt[0], y+delt[1], delt, word[1:])
-        if part == 2:
+        elif part == 2:
             return True
 
     def look_for_xmas(grid, x, y, searchterm):
@@ -72,15 +73,17 @@ def problemsolver(grid:list, part:int):
                 count += 1
         return count
     
-    def look_diag(grid, x, y, delt):
-        pass
+    def look_diag(grid, x, y, i, j):
+        return is_xmas(grid, x + i[0], y + i[1], word="M") and is_xmas(grid, x + j[0], y + j[1], word="S")
 
-    def look_for_mas(grid, x, y, searchterm):
-        count = 0
-        for delt in DIRLIST:
-            if look_diag(grid, x, y, delt, list(searchterm)):
-                return 1
-        return 0
+    def look_for_mas(grid, x, y):
+        #Check each corner of the A for the rest of MAS
+        cond1 = look_diag(grid, x, y, (-1, -1), (+1, +1)) or look_diag(grid, x, y, (+1, +1), (-1, -1)) 
+        cond2 = look_diag(grid, x, y, (-1, +1), (+1, -1)) or look_diag(grid, x, y, (+1, -1), (-1, +1))
+        if cond1 and cond2:
+            return True
+        else:
+            return False
     
     count = 0
     for x in range(len(grid)):
@@ -91,8 +94,8 @@ def problemsolver(grid:list, part:int):
                     count += look_for_xmas(grid, x, y, searchterm)
             if part == 2:
                 if grid[x][y] == "A":
-                    searchterm = "MAS"
-                    count += look_for_mas(grid, x, y, searchterm)
+                    if look_for_mas(grid, x, y):
+                        count += 1
     return count
         
 @log_time
@@ -127,7 +130,7 @@ def part_B():
     #Assert testcase
     assert testcase == 9, f"Test case B failed returned:{testcase}"
     #Solve puzzle with full dataset
-    answerB = "" #problemsolver(data, 2)
+    answerB = problemsolver(data, 2)
     return answerB
 
 def main():
@@ -142,7 +145,7 @@ def main():
     #Solve part B
     resultB = part_B()
     logger.info(f"part B solution: \n{resultB}\n")
-    # support.submit_answer(DAY, YEAR, 2, resultB)
+    support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
     LOC = support.recurse_dir(f'./scripts/day{DAY}/')
