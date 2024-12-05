@@ -10,8 +10,8 @@ from collections import deque
 from functools import cmp_to_key
 
 #Set day/year global variables
-DAY:int = datetime.now().day
-YEAR:int = datetime.now().year
+DAY:int = 5 #datetime.now().day
+YEAR:int = 2024 #datetime.now().year
 
 def problemsolver(arr:list, part:int):
     def parse_input(arr:list):
@@ -45,6 +45,7 @@ def problemsolver(arr:list, part:int):
                     if (rule in order) and (not idx < order.index(rule)):
                         return False
         return True
+    
     def nothingcompares_toyou(a, b):
         # console.log(f"compare {a} and {b}")
         for key, val in rules.items():
