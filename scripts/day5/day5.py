@@ -58,10 +58,7 @@ def problemsolver(arr:list, part:int):
         return 0
         
     def put_in_order(orders:list):
-        # console.log(f"{orders}")
-        ordered = sorted(orders, key=cmp_to_key(nothingcompares_toyou))
-        # console.log(f"{ordered}")
-        return ordered
+        return sorted(orders, key=cmp_to_key(nothingcompares_toyou))
 
     rules, orders = parse_input(arr)
     middles = []
