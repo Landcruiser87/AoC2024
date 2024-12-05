@@ -5,8 +5,6 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
-from datetime import datetime
-from collections import deque
 from functools import cmp_to_key
 
 #Set day/year global variables
