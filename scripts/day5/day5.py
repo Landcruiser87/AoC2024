@@ -159,3 +159,9 @@ if __name__ == "__main__":
 
 # Part B:
 # Fix the out of order rows
+# Support setup 170, 174
+    # if part == 1:
+    #     sampledata = subtext.select("pre")[-2].text
+    # elif part == 2:
+    #     subtext = bs4ob.find_all("article")[0]
+    #     sampledata = subtext.select("pre")[-2].text
