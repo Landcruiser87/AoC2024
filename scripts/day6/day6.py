@@ -7,17 +7,23 @@ from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
 from itertools import cycle
+from collections import deque
 
 #Set day/year global variables
 DAY:int = 6 #datetime.now().day
 YEAR:int = 2024 #datetime.now().year
 
 def problemsolver(grid:list, part:int):
-    def find_start():
+    def find_start(target:str="^"):
+        res = []
         for x in range(len(grid)):
             for y in range(len(grid[x])):
-                if grid[x][y] == "^":
-                    return x, y
+                if grid[x][y] == target:
+                    if part == 2 and target == ".":
+                        res.append((x, y))
+                    else:
+                        return x, y
+        return res
     
     def onboard(point:tuple) -> bool:
         x = point[0]
@@ -30,26 +36,61 @@ def problemsolver(grid:list, part:int):
         else:
             return True
 
+    def paradox():
+        pass
+        #Still not sure how to test for this. 
+
+
     DIRS = cycle([(-1, 0), (0, 1), (1, 0),(0, -1)])
     dx, dy = next(DIRS)
     x, y = find_start()
+    if part == 2:
+        pounds = deque(find_start("."))
+        o_x, o_y = x, y
     visited = set()
+    paradoxes = 0
     onpatrol = True
+
     while onpatrol:
+        #First check to see if we've stepped off the board.  Finish criteria
         if not onboard((x + dx, y + dy)):
-            visited.add((x + dx, y + dy))
-            onpatrol = False
+            if part == 1:
+                #Add the last step out
+                visited.add((x + dx, y + dy))
+                onpatrol = False
+            else: 
+                #Not a paradox so, keep calm and continue on
+                continue
+        #Next see if we've hit an obstacle. If so, change direction
+        #I feel like part2 should be somehow called here for paradox testing
+        #I will probably have to simulate a path forward and reset the starting point once a paradox is found.  
+        # But to where???  Maybe i store the path directions too...
+
         elif grid[x + dx][y + dy] == "#":
             dx, dy = next(DIRS)
+        #This will only evaluate on part 2 due to the longer tuple
+        #I still need a way to reset the start conditions. 
+        elif (x, y, dx, dy) in visited and part == 2:
+            paradoxes += 1
+            s1, s2 = pounds.popleft()
+            x = o_x
+            y = o_y
+            dx, dy = DIRS[0]
+            visited = [(s1, s2, dx, dy)]
+            #rest 
+        #Otherwise. Mark the location as visited and move in desired direction. 
         else:
-            visited.add((x, y))
+            if part == 1:
+                visited.add((x, y))
+            elif part == 2:
+                visited.add((x, y, dx, dy))
             x += dx
             y += dy
 
     if part == 1:
         return len(visited)
     if part == 2:
-        return "butthead"
+        return paradoxes
 
 @log_time
 def part_A():
@@ -119,7 +160,7 @@ if __name__ == "__main__":
 #
 #Part B
 #Now... we have to find a way to place objects that will create infinite loops (ie -time paradoxes in the story)
-#Being that we nromally try to avoid infinite loops in programming, this will be interesting to trap.
+#Being that we nromally try to avoid infinite loops in programming, this will be hard af to trap.
 #
 #Idea 1
     #As we're iterating through, count the number of turns to make a loop.  
@@ -129,3 +170,10 @@ if __name__ == "__main__":
     #Throw computer out window
 
 #Idea 2 is looking better to me
+
+#Idea 3
+    #Sooo instead of trying to find infinites.  we need to generate them. 
+    #To do that, we'll have a deque of every other starting point in the grid (periods) as a possible pound sign. 
+    #If the loop returns to that point, we will know that we reached an infinite loop
+    #because that spot will already be in the visited set.  
+    #Problem is,  I need to add the correct directional component (dx, dy) and I can't quite see how to do that yet. 
