@@ -43,10 +43,13 @@ def problemsolver(grid:list, part:int):
             dx, dy = next(DIRS)
         else:
             visited.add((x, y))
-            x = x + dx
-            y = y + dy
+            x += dx
+            y += dy
 
-    return len(visited)
+    if part == 1:
+        return len(visited)
+    if part == 2:
+        return "butthead"
 
 @log_time
 def part_A():
@@ -118,4 +121,11 @@ if __name__ == "__main__":
 #Now... we have to find a way to place objects that will create infinite loops (ie -time paradoxes in the story)
 #Being that we nromally try to avoid infinite loops in programming, this will be interesting to trap.
 #
+#Idea 1
+    #As we're iterating through, count the number of turns to make a loop.  
+    #Once we get to 3 turns, put an obstruction NSEW and test for if the loop is infinite?
 
+#Idea 2
+    #Throw computer out window
+
+#Idea 2 is looking better to me
