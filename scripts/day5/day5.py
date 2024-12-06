@@ -47,10 +47,10 @@ def problemsolver(arr:list, part:int):
     def nothingcompares_toyou(a:int, b:int)->int:
         # console.log(f"compare {a} and {b}")
         for key, val in rules.items():
-            if a == key: 
+            if a == key:
                 if b in val:
                     return 1
-            if b == key: 
+            if b == key:
                 if a in val:
                     return -1
         return 0

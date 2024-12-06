@@ -18,7 +18,7 @@ The .gitignore will ignore all text files / (and other formats) so it won't get 
 | 03  | ⭐⭐ | [Day3](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day3/day3.py) |[Mull it over](https://adventofcode.com/2024/day/3) | 28 ms | 37 ms | 100 |
 | 04  | ⭐⭐ | [Day4](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day4/day4.py) |[Ceres Search](https://adventofcode.com/2024/day/4) |  82 ms | 46 ms | 127 |
 | 05  | ⭐⭐ | [Day5](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day5/day5.py) |[Print Queue](https://adventofcode.com/2024/day/5) |  42 ms | 62 ms | 85 |
-
+| 06  |  | [Day6](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day5/day5.py) |[Guard Gallivant](https://adventofcode.com/2024/day/6) |   ms |  ms |  |
 
 #### For next year
 

@@ -6,13 +6,47 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
+from itertools import cycle
 
 #Set day/year global variables
-DAY:int = datetime.now().day
-YEAR:int = datetime.now().year
+DAY:int = 6 #datetime.now().day
+YEAR:int = 2024 #datetime.now().year
 
-# def problemsolver(arr:list, part:int):
-#     pass
+def problemsolver(grid:list, part:int):
+    def find_start():
+        for x in range(len(grid)):
+            for y in range(len(grid[x])):
+                if grid[x][y] == "^":
+                    return x, y
+    
+    def onboard(point:tuple) -> bool:
+        x = point[0]
+        y = point[1]
+        height, width  = len(grid), len(grid[0])
+        if (x < 0) | (x >= height):
+            return False
+        elif (y < 0) | (y >= width):
+            return False
+        else:
+            return True
+
+    DIRS = cycle([(-1, 0), (0, 1), (1, 0),(0, -1)])
+    dx, dy = next(DIRS)
+    x, y = find_start()
+    visited = set()
+    onpatrol = True
+    while onpatrol:
+        if not onboard((x + dx, y + dy)):
+            visited.add((x + dx, y + dy))
+            onpatrol = False
+        elif grid[x + dx][y + dy] == "#":
+            dx, dy = next(DIRS)
+        else:
+            visited.add((x, y))
+            x = x + dx
+            y = y + dy
+
+    return len(visited)
 
 @log_time
 def part_A():
@@ -25,11 +59,11 @@ def part_A():
     # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 1)
+    testcase = problemsolver(testdata, 1)
     #Assert testcase
-    assert testcase == "", f"Test case A failed returned:{testcase}"
+    assert testcase == 41, f"Test case A failed returned:{testcase}"
     #Solve puzzle with full dataset
-    answerA = "" #problemsolver(data, 1)
+    answerA = problemsolver(data, 1)
     return answerA
 
 @log_time
@@ -42,9 +76,9 @@ def part_B():
     # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 2)
+    testcase = problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == "", f"Test case B failed returned:{testcase}"
+    assert testcase == 6, f"Test case B failed returned:{testcase}"
     #Solve puzzle with full dataset
     answerB = "" #problemsolver(data, 2)
     return answerB
@@ -76,3 +110,12 @@ if __name__ == "__main__":
 ########################################################
 #Notes
 #Part A Notes
+#
+# Well this onee.... i dunno.  feels like dfs but I might be able to just count the unique path positions
+# Only rule is that when you hit a # block, you have to turn 90deg to the right. 
+#
+#Part B
+#Now... we have to find a way to place objects that will create infinite loops (ie -time paradoxes in the story)
+#Being that we nromally try to avoid infinite loops in programming, this will be interesting to trap.
+#
+
