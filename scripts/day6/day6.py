@@ -35,6 +35,18 @@ def problemsolver(grid:list, part:int):
             return False
         else:
             return True
+        
+    def find_pathpoints(path:list):
+        possibles = set()
+        fullpath = deque(path)
+        while fullpath:
+            t = fullpath.popleft()
+            for direction in DIRS:
+                i = t[0] + direction[0]
+                j = t[1] + direction[1]
+                if onboard(grid[i][j]) and grid[i][j] == ".":
+                    possibles.add((i, j))
+        return possibles
 
     DIRS = cycle([(-1, 0), (0, 1), (1, 0),(0, -1)])
     dx, dy = next(DIRS)
@@ -42,7 +54,6 @@ def problemsolver(grid:list, part:int):
     visited = set()
     onpatrol = True
     ox, oy = x, y
-    odx, ody = dx, dy
     
     if part == 2:
         pounds = deque(find_start("."))
@@ -60,24 +71,37 @@ def problemsolver(grid:list, part:int):
                 break
             else:
                 x, y = ox, oy
-                dx, dy = odx, ody
+                DIRS = cycle([(-1, 0), (0, 1), (1, 0),(0, -1)])
+                dx, dy = next(DIRS)
                 visited = set()
                 if len(pounds) > 0:
                     px, py = pounds.popleft()
                 else:
                     break
             
+        #If we see an obstruction (original or theoretical), turn right
         if grid[x + dx][y + dy] == "#" or (x + dx, y + dy) == (px, py):
             dx, dy = next(DIRS)
 
+        #End criteria for part 2. 
         elif (x + dx, y + dy, dx, dy) in visited:
             #Idea here is if it finds a position its already seen (the pound
             #positions) it will have hit an infinite loop because
             #the position will be present in visited as well as direction. 
-            #this should provide uniqueness.  But it just runs forever. 
-            #What if... I only add points that are on the original path. 
-            #
+            #Then it resets the search params and looks at the next "." 
+            #in the stack.  
             paradoxes += 1
+            # logger.warning(f"paradox found at {(px, py)}")
+            x, y = ox, oy
+            DIRS = cycle([(-1, 0), (0, 1), (1, 0),(0, -1)])
+            dx, dy = next(DIRS)
+            visited = set()
+            if len(pounds) > 0:
+                px, py = pounds.popleft()
+
+            else:
+                break
+            #To those reading, welcome to my ugliest code yet!  
         else:
             if part == 1:
                 visited.add((x, y))
@@ -87,8 +111,6 @@ def problemsolver(grid:list, part:int):
             y += dy
 
     if part == 1:
-        #TODO - Write function that adds every "." along the original path 
-        #Can probably re-use DIRS.
         return len(visited)
     if part == 2:
         return paradoxes
@@ -107,6 +129,7 @@ def part_A():
     testcase = problemsolver(testdata, 1)
     #Assert testcase
     assert testcase == 41, f"Test case A failed returned:{testcase}"
+    logger.info(f"Test case:{testcase} passes for part A")
     #Solve puzzle with full dataset
     answerA = problemsolver(data, 1)
     return answerA
@@ -124,8 +147,9 @@ def part_B():
     testcase = problemsolver(testdata, 2)
     #Assert testcase
     assert testcase == 6, f"Test case B failed returned:{testcase}"
+    logger.info(f"Test case:{testcase} passes for part B")
     #Solve puzzle with full dataset
-    answerB = "" #problemsolver(data, 2)
+    answerB = problemsolver(data, 2)
     return answerB
 
 def main():
@@ -163,6 +187,7 @@ if __name__ == "__main__":
 #Now... we have to find a way to place objects that will create infinite loops (ie -time paradoxes in the story)
 #Being that we nromally try to avoid infinite loops in programming, this will be hard af to trap.
 #
+#Note:Can't put an obstruction at the guard position. 
 #Idea 1
     #As we're iterating through, count the number of turns to make a loop.  
     #Once we get to 3 turns, put an obstruction NSEW and test for if the loop is infinite?
