@@ -61,19 +61,23 @@ def problemsolver(grid:list, part:int):
             else:
                 x, y = ox, oy
                 dx, dy = odx, ody
-                px, py = pounds.popleft()
-                continue
-
+                visited = set()
+                if len(pounds) > 0:
+                    px, py = pounds.popleft()
+                else:
+                    break
+            
         if grid[x + dx][y + dy] == "#" or (x + dx, y + dy) == (px, py):
             dx, dy = next(DIRS)
 
         elif (x + dx, y + dy, dx, dy) in visited:
             #Idea here is if it finds a position its already seen (the pound
-            #positions) it will have hit an infinite loop because the previous
-            #if statement won't trigger a turn.
+            #positions) it will have hit an infinite loop because
+            #the position will be present in visited as well as direction. 
+            #this should provide uniqueness.  But it just runs forever. 
+            #What if... I only add points that are on the original path. 
+            #
             paradoxes += 1
-            if not len(pounds) > 0:
-                break
         else:
             if part == 1:
                 visited.add((x, y))
@@ -83,6 +87,8 @@ def problemsolver(grid:list, part:int):
             y += dy
 
     if part == 1:
+        #TODO - Write function that adds every "." along the original path 
+        #Can probably re-use DIRS.
         return len(visited)
     if part == 2:
         return paradoxes
