@@ -36,53 +36,48 @@ def problemsolver(grid:list, part:int):
         else:
             return True
 
-    def paradox():
-        pass
-        #Still not sure how to test for this. 
-
-
     DIRS = cycle([(-1, 0), (0, 1), (1, 0),(0, -1)])
     dx, dy = next(DIRS)
     x, y = find_start()
+    visited = set()
+    onpatrol = True
+    ox, oy = x, y
+    odx, ody = dx, dy
+    
     if part == 2:
         pounds = deque(find_start("."))
-        o_x, o_y = x, y
-    visited = set()
-    paradoxes = 0
-    onpatrol = True
+        px, py = pounds.popleft()
+        paradoxes = 0
+    else:
+        px, py = (-1, -1)
 
     while onpatrol:
         #First check to see if we've stepped off the board.  Finish criteria
         if not onboard((x + dx, y + dy)):
+            #Add the last step out
             if part == 1:
-                #Add the last step out
                 visited.add((x + dx, y + dy))
-                onpatrol = False
-            else: 
-                #Not a paradox so, keep calm and continue on
+                break
+            else:
+                x, y = ox, oy
+                dx, dy = odx, ody
+                px, py = pounds.popleft()
                 continue
-        #Next see if we've hit an obstacle. If so, change direction
-        #I feel like part2 should be somehow called here for paradox testing
-        #I will probably have to simulate a path forward and reset the starting point once a paradox is found.  
-        # But to where???  Maybe i store the path directions too...
 
-        elif grid[x + dx][y + dy] == "#":
+        if grid[x + dx][y + dy] == "#" or (x + dx, y + dy) == (px, py):
             dx, dy = next(DIRS)
-        #This will only evaluate on part 2 due to the longer tuple
-        #I still need a way to reset the start conditions. 
-        elif (x, y, dx, dy) in visited and part == 2:
+
+        elif (x + dx, y + dy, dx, dy) in visited:
+            #Idea here is if it finds a position its already seen (the pound
+            #positions) it will have hit an infinite loop because the previous
+            #if statement won't trigger a turn.
             paradoxes += 1
-            s1, s2 = pounds.popleft()
-            x = o_x
-            y = o_y
-            dx, dy = DIRS[0]
-            visited = [(s1, s2, dx, dy)]
-            #rest 
-        #Otherwise. Mark the location as visited and move in desired direction. 
+            if not len(pounds) > 0:
+                break
         else:
             if part == 1:
                 visited.add((x, y))
-            elif part == 2:
+            else:
                 visited.add((x, y, dx, dy))
             x += dx
             y += dy
