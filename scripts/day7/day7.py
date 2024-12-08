@@ -31,7 +31,7 @@ def problemsolver(arr:list, part:int):
         
     def recursive_add(mathstr:str, n_idx:int=0, total:int=0):
         #Exit criteria
-        if n_idx >= len(mathstr):
+        if n_idx > len(mathstr):
             return total
         #Find all the operators        
         ops = [idx for idx, x in enumerate(mathstr) if not x.isnumeric()]
@@ -69,15 +69,14 @@ def problemsolver(arr:list, part:int):
         return recursive_add(mathstr[n_idx+1:], n_idx, total)
         
     cals = parse_input(arr)    
-    test_vals = set()
+    test_vals = 0
     operators = ["+", "*"]
     farts = [(len(str(x)),x) for x in cals.keys()]
     farts = sorted(farts, key=lambda x:x[0], reverse=True)
     # logger.warning(f"Longest key = {farts[0]}")
     longest = farts[0][0]
     for test_val, parts in cals.items():
-        possibles = product(operators, repeat=len(parts)-1)
-        for possible in possibles:
+        for possible in product(operators, repeat=len(parts)-1):
             equation = parts[0]
             for num, op in zip(parts[1:], possible):
                 equation += op + num
@@ -85,10 +84,10 @@ def problemsolver(arr:list, part:int):
             wrong_math = recursive_add(equation)
             if np.int64(test_val) == wrong_math:
                 logger.warning(f"Equation: {test_val:<{longest}}== {equation}")
-                assert " ".join(parts) == equation.replace("*", " ").replace("+", " ")
-                test_vals.add(np.int64(test_val))
+                test_vals += np.int64(test_val)
+                break
 
-    return sum(test_vals)
+    return test_vals
 
 @log_time
 def part_A():
@@ -139,8 +138,7 @@ def main():
         exit()
     else:
         logger.info(f"part A solution: \n{resultA}\n")
-    
-    # support.submit_answer(DAY, YEAR, 1, resultA)
+    support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
     # resultB = part_B()
