@@ -66,15 +66,17 @@ def problemsolver(arr:list, part:int):
     cals = parse_input(arr)    
     test_vals = set()
     operators = ["+", "*"]
+    longest = max([len(str(x)) for x in cals.keys()]) - 1
     for test_val, parts in cals.items():
-        possibles = product(operators, repeat=len(parts) - 1)
+        possibles = product(operators, repeat=len(parts))
         for possible in possibles:
-            part_one = parts[0]
+            equation = parts[0]
             for num, op in zip(parts[1:], possible):
-                part_one += op + num
-            weirdmath = recursive_add(part_one)
-            if test_val == weirdmath:
-                # logger.info(f"Adding:{test_val}")
+                equation += op + num
+                # logger.warning(f"{equation}")
+            wrong_math = recursive_add(equation)
+            if test_val == wrong_math:
+                logger.info(f"Equation: {test_val:<{longest}}=={equation}")
                 test_vals.add(test_val)
 
     return sum(test_vals)
@@ -122,8 +124,14 @@ def main():
 
     #Solve part A
     resultA = part_A()
-    logger.info(f"part A solution: \n{resultA}\n")
-    support.submit_answer(DAY, YEAR, 1, resultA)
+    fails = [8400518384267]
+    if resultA in fails:
+        logger.warning(f"Answer already submitted\nAnswer: {resultA}")
+        exit()
+    else:
+        logger.info(f"part A solution: \n{resultA}\n")
+    
+    # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
     # resultB = part_B()

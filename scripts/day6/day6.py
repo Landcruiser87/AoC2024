@@ -207,6 +207,8 @@ if __name__ == "__main__":
     #because that spot will already be in the visited set.  
     #Problem is,  I need to add the correct directional component (dx, dy) and I can't quite see how to do that yet. 
 
+    #IDEA - add only the points that are along the original path. 
+    
     # if part == 1:
     #     sampledata = subtext.select("pre")[-6].text
     # elif part == 2:
