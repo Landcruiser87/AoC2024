@@ -22,14 +22,27 @@ def problemsolver(arr:list, part:int):
             calibrations[int(total)] = part.split()
         return calibrations
     
+    def domath(left:str, right:str, operator:str):
+        if operator == "*":
+            return int(left) * int(right)
+        elif operator == "+":
+            return int(left) + int(right)
+        
     def recursive_add(input:str, n_idx:int=0, total:int=0):
-        if n_idx < len(input):
-            nons = [idx for idx, x in enumerate(input) if not x.isnumeric()]
-            if len(nons) > 1:
-                pass
-            total = eval(input[:nons[1]])
-            #start here tomorrow.  recursion always hurts
-            recursive_add(input[n_idx:], n_idx, total)
+        if n_idx >= len(input):
+            return total
+        nons = [idx for idx, x in enumerate(input) if not x.isnumeric()]
+        if len(nons) > 1:
+            left = input[:nons[0]]
+            operator = input[nons[0]]
+            right = input[nons[0]:nons[1]]
+            cursum = domath(left, right, operator)
+            n_idx = nons[1] + 1
+        else:
+            res = domath(input[:nons[0]], input[nons[0]+1:], input[nons[0]])
+            return res
+        
+        return recursive_add(input[n_idx:], n_idx + 2, cursum + total)
         
     cals = parse_input(arr)    
     test_vals = []
@@ -45,10 +58,8 @@ def problemsolver(arr:list, part:int):
                     logger.info(f"Adding:{test_val}")
                     test_vals.append(test_val)
 
-        #gameplan is to check all values 
-        #for possible combinations. 
-        #can't rearrange. numbers just + or *
-        return sum(test_vals)
+    return sum(test_vals)
+
 @log_time
 def part_A():
     logger.info("Solving part A")
