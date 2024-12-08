@@ -54,9 +54,9 @@ def problemsolver(grid:list, part:int):
     visited = set()
     onpatrol = True
     ox, oy = x, y
-    
+
     if part == 2:
-        pounds = deque(find_start("."))
+        pounds = deque(find_pathpoints(vp))
         px, py = pounds.popleft()
         paradoxes = 0
     else:
@@ -111,8 +111,10 @@ def problemsolver(grid:list, part:int):
             y += dy
 
     if part == 1:
+        vp = visited.copy()
         return len(visited)
     if part == 2:
+        vp = visited.copy()
         return paradoxes
 
 @log_time
@@ -155,7 +157,8 @@ def part_B():
 def main():
     global data
     data = support.pull_inputdata(DAY, YEAR)
-
+    global vp
+    vp = set()
     #Solve part A
     resultA = part_A()
     logger.info(f"part A solution: \n{resultA}\n")
@@ -203,3 +206,9 @@ if __name__ == "__main__":
     #If the loop returns to that point, we will know that we reached an infinite loop
     #because that spot will already be in the visited set.  
     #Problem is,  I need to add the correct directional component (dx, dy) and I can't quite see how to do that yet. 
+
+    # if part == 1:
+    #     sampledata = subtext.select("pre")[-6].text
+    # elif part == 2:
+    #     subtext = bs4ob.find_all("article")[0]
+    #     sampledata = subtext.select("pre")[-6].text
