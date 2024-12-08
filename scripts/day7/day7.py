@@ -8,6 +8,7 @@ from utils import support
 from datetime import datetime
 from itertools import combinations as cb
 from collections import deque
+from itertools import product
 
 #Set day/year global variables
 DAY:int = 7 #datetime.now().day
@@ -21,20 +22,33 @@ def problemsolver(arr:list, part:int):
             calibrations[int(total)] = part.split()
         return calibrations
     
+    def recursive_add(input:str, n_idx:int=0, total:int=0):
+        if n_idx < len(input):
+            nons = [idx for idx, x in enumerate(input) if not x.isnumeric()]
+            if len(nons) > 1:
+                pass
+            total = eval(input[:nons[1]])
+            #start here tomorrow.  recursion always hurts
+            recursive_add(input[n_idx:], n_idx, total)
+        
     cals = parse_input(arr)    
     test_vals = []
-
+    operators = ["+", "*"]
     for test_val, parts in cals.items():
-        possibles = cb(["+", "*"], len(parts) - 1)
-        stack = deque(possibles)
-        while stack:
-            operator = stack.popleft()
-            if test_val == eval(f"{operator[0]}".join(parts)):
-                test_vals.append(test_val)
-    #gameplan is to check all values 
-    #for possible combinations. 
-    #can't rearrange. numbers just + or *
-    return sum(test_vals)
+        possibles = product(operators, repeat=len(parts) - 1)
+        for possible in possibles:
+            part_one = parts[0]
+            for num, op in zip(parts[1:], possible):
+                part_one += op + num
+                weirdmath = recursive_add(part_one)
+                if test_val == weirdmath:
+                    logger.info(f"Adding:{test_val}")
+                    test_vals.append(test_val)
+
+        #gameplan is to check all values 
+        #for possible combinations. 
+        #can't rearrange. numbers just + or *
+        return sum(test_vals)
 @log_time
 def part_A():
     logger.info("Solving part A")
@@ -51,7 +65,7 @@ def part_A():
     assert testcase == 3749, f"Test case A failed returned:{testcase}"
     # logger.info(f"Test case:{testcase} pass for part A")
     #Solve puzzle with full dataset
-    answerA = "" #problemsolver(data, 1)
+    answerA = problemsolver(data, 1)
     return answerA
 
 @log_time
