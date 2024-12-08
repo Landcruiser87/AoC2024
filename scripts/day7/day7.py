@@ -6,8 +6,6 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
-from itertools import combinations as cb
-from collections import deque
 from itertools import product
 
 #Set day/year global variables
@@ -28,24 +26,45 @@ def problemsolver(arr:list, part:int):
         elif operator == "+":
             return int(left) + int(right)
         
-    def recursive_add(input:str, n_idx:int=0, total:int=0):
-        if n_idx >= len(input):
+    def recursive_add(mathstr:str, n_idx:int=0, total:int=0):
+        #Exit criteria
+        if n_idx >= len(mathstr):
             return total
-        nons = [idx for idx, x in enumerate(input) if not x.isnumeric()]
-        if len(nons) > 1:
-            left = input[:nons[0]]
-            operator = input[nons[0]]
-            right = input[nons[0]:nons[1]]
-            cursum = domath(left, right, operator)
-            n_idx = nons[1] + 1
-        else:
-            res = domath(input[:nons[0]], input[nons[0]+1:], input[nons[0]])
-            return res
+        #Find all the operators        
+        ops = [idx for idx, x in enumerate(mathstr) if not x.isnumeric()]
+        #If string has two or more operators. 
+        if len(ops) > 1:
+            #Grab the operator id
+            op_id = ops.pop(0)
+            #subselect the evaluation string ie - up to next operator
+            samp = mathstr[:ops[0]]
+            #Grab the left aka, current sum 
+            if total != 0:
+                left = str(total)
+            else:
+                left = samp[:op_id] 
+            #Grab the right
+            right = samp[op_id+1:] #i think i need the next op id here.  
+            #Do some weird fuckin math
+            total = domath(left, right, samp[op_id])
+            #select next operator index to start from
+            n_idx = op_id
+        #If string has only one operator
+        elif len(ops) == 1:
+            op_id = ops.pop()
+            if total != 0:
+                left = str(total)
+            else:
+                left = mathstr[:op_id]
+            right = mathstr[op_id+1:]
+            total = domath(left, right, mathstr[op_id])
+            #Boot it over the length limit.
+            n_idx += len(mathstr)
         
-        return recursive_add(input[n_idx:], n_idx + 2, cursum + total)
+        return recursive_add(mathstr[n_idx+1:], n_idx, total)
         
     cals = parse_input(arr)    
-    test_vals = []
+    test_vals = set()
     operators = ["+", "*"]
     for test_val, parts in cals.items():
         possibles = product(operators, repeat=len(parts) - 1)
@@ -53,10 +72,10 @@ def problemsolver(arr:list, part:int):
             part_one = parts[0]
             for num, op in zip(parts[1:], possible):
                 part_one += op + num
-                weirdmath = recursive_add(part_one)
-                if test_val == weirdmath:
-                    logger.info(f"Adding:{test_val}")
-                    test_vals.append(test_val)
+            weirdmath = recursive_add(part_one)
+            if test_val == weirdmath:
+                # logger.info(f"Adding:{test_val}")
+                test_vals.add(test_val)
 
     return sum(test_vals)
 
@@ -104,7 +123,7 @@ def main():
     #Solve part A
     resultA = part_A()
     logger.info(f"part A solution: \n{resultA}\n")
-    # support.submit_answer(DAY, YEAR, 1, resultA)
+    support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
     # resultB = part_B()
@@ -124,3 +143,12 @@ if __name__ == "__main__":
 ########################################################
 #Notes
 #Part A Notes
+#
+# Ok.  Sooooo these damn elephants.  have been stealing mathematical operations in the elfs calibrations !  I KNOW RIGHT?
+# We've got two lists of numbers.  One is the test calibration total.  The other is a list of numbers that could be added or multiplied together 
+# to equal the test calibration total. 
+# Our job..  is to find which of those calibrations are valid (aka total == eval of equation)
+# First idea is to recursively split the string on its operators.  
+# Passing test cases but first submission is too low.
+# 
+#8400518384267 is too low
