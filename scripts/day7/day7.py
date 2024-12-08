@@ -7,6 +7,7 @@ from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
 from itertools import product
+import numpy as np
 
 #Set day/year global variables
 DAY:int = 7 #datetime.now().day
@@ -16,15 +17,17 @@ def problemsolver(arr:list, part:int):
     def parse_input(arr:list):
         calibrations = {}
         for line in arr:
-            total, part = line.split(":")
-            calibrations[int(total)] = part.split()
+            total, part = line.strip().split(":")
+            calibrations[total] = part.strip().split()
         return calibrations
     
-    def domath(left:str, right:str, operator:str):
+    def domath(left:int, right:int, operator:str):
         if operator == "*":
-            return int(left) * int(right)
+            left *= right
         elif operator == "+":
-            return int(left) + int(right)
+            left += right
+
+        return left
         
     def recursive_add(mathstr:str, n_idx:int=0, total:int=0):
         #Exit criteria
@@ -39,45 +42,51 @@ def problemsolver(arr:list, part:int):
             #subselect the evaluation string ie - up to next operator
             samp = mathstr[:ops[0]]
             #Grab the left aka, current sum 
-            if total != 0:
-                left = str(total)
-            else:
+            if total == 0:
                 left = samp[:op_id] 
+            else:
+                left = str(total)
             #Grab the right
             right = samp[op_id+1:] #i think i need the next op id here.  
             #Do some weird fuckin math
-            total = domath(left, right, samp[op_id])
+            total = domath(int(left), int(right), samp[op_id])
             #select next operator index to start from
-            n_idx = op_id
-        #If string has only one operator
+            n_idx = op_id #BUG could be here to.  This indexes the first operator in the input string as your reference point for stepping farther down into the recursion.
+
+        #If string has only one operator left.  (the rightmost)
         elif len(ops) == 1:
             op_id = ops.pop()
-            if total != 0:
-                left = str(total)
-            else:
+            if total == 0:
                 left = mathstr[:op_id]
+            else:
+                left = str(total)
             right = mathstr[op_id+1:]
-            total = domath(left, right, mathstr[op_id])
-            #Boot it over the length limit.
-            n_idx += len(mathstr)
+            total = domath(int(left), int(right), mathstr[op_id])
+            #Index the next operator forward
+            n_idx += op_id 
+            #Could be in my exit routine here.  might be skipping something
         
         return recursive_add(mathstr[n_idx+1:], n_idx, total)
         
     cals = parse_input(arr)    
     test_vals = set()
     operators = ["+", "*"]
-    longest = max([len(str(x)) for x in cals.keys()]) - 1
+    farts = [(len(str(x)),x) for x in cals.keys()]
+    farts = sorted(farts, key=lambda x:x[0], reverse=True)
+    # logger.warning(f"Longest key = {farts[0]}")
+    longest = farts[0][0]
     for test_val, parts in cals.items():
-        possibles = product(operators, repeat=len(parts))
+        possibles = product(operators, repeat=len(parts)-1)
         for possible in possibles:
             equation = parts[0]
             for num, op in zip(parts[1:], possible):
                 equation += op + num
-                # logger.warning(f"{equation}")
+            assert " ".join(parts) == equation.replace("*", " ").replace("+", " ")
             wrong_math = recursive_add(equation)
-            if test_val == wrong_math:
-                logger.info(f"Equation: {test_val:<{longest}}=={equation}")
-                test_vals.add(test_val)
+            if np.int64(test_val) == wrong_math:
+                logger.warning(f"Equation: {test_val:<{longest}}== {equation}")
+                assert " ".join(parts) == equation.replace("*", " ").replace("+", " ")
+                test_vals.add(np.int64(test_val))
 
     return sum(test_vals)
 

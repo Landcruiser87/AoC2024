@@ -1,18 +1,19 @@
 import os
+import sys
 import time
 import logging
 import percache
 import requests
 import numpy as np
 from typing import Any
-from pathlib import Path
+from pathlib import Path, PurePath
 from bs4 import BeautifulSoup
 from datetime import timedelta
 from rich.console import Console
 from rich.logging import RichHandler
 
 ################################# Logging Funcs #############################
-def get_logger(console:Console)->logging.Logger: #log_dir:Path, 
+def get_logger(console:Console, log_dir:str=None)->logging.Logger: #log_dir:Path, 
     """
     Loads logger instance.  When given a path and access to the terminal output.
     The logger will save a log of all records, as well as print it out to your
@@ -70,7 +71,7 @@ with open("./secret/cookie.txt", "r") as f:
 cache = percache.Cache(".cache", livesync=True)
 cache.expire = timedelta(hours=1)
 console = Console(color_system="auto")
-logger = get_logger(console)
+logger = get_logger(console) #PurePath(Path.cwd(), Path("./scripts/day7/day7.log")))
 
 
 ################################# Timing Funcs ##############################
