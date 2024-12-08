@@ -139,7 +139,6 @@ secret/
 *.txt
 *.xlsx
 *.json
-*.pickle
 *.cache.bak
 *.cache.dir
 *.cache.dat
