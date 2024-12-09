@@ -8,7 +8,6 @@ from utils import support
 from datetime import datetime
 from collections import deque
 from itertools import combinations
-from math import sqrt
 
 #Set day/year global variables
 DAY:int = 8 #datetime.now().day
