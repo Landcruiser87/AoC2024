@@ -7,6 +7,9 @@ from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
 from collections import deque
+from itertools import combinations
+from math import sqrt
+
 #Set day/year global variables
 DAY:int = 8 #datetime.now().day
 YEAR:int = 2024 #datetime.now().year
@@ -21,16 +24,53 @@ def problemsolver(grid:list, part:int):
                         antenna[grid[x][y]] = set()
                     antenna[grid[x][y]].add((x,y))
         return antenna
-    def diagonal_ray():
-        pass
     
+    def onboard(point:tuple) -> bool:
+        x = point[0]
+        y = point[1]
+        height, width  = len(grid), len(grid[0])
+        if (x < 0) | (x >= height):
+            return False
+        elif (y < 0) | (y >= width):
+            return False
+        else:
+            return True
+    def check_one(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
+        poundtown = manual["#"]
+        #SW -> NE
+        anti_1 = (x1 + dx, y1 - dy)
+        anti_2 = (x2 - dx, y2 + dy)
+        if onboard(anti_1) and onboard(anti_2) and (anti_1 in poundtown) and (anti_2 in poundtown):
+            return True
+        
+    def check_two(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
+        poundtown = manual["#"]
+        #NW -> SE
+        anti_3 = (x1 - dx, y1 + dy)
+        anti_4 = (x2 + dx, y2 - dy)
+        if onboard(anti_3) and onboard(anti_4) and (anti_3 in poundtown) and (anti_4 in poundtown):
+            return True
+
     manual = parse_input()
+    positions = 0
     #create the antinodes and then check which locations exist in the antenna["#"] dict
     for ant_type, locs in manual.items():
-        ant_pile = deque(locs)
-        while ant_pile:
-            
+        if ant_type != "#":
+            ant_pile = deque(list(combinations(locs, 2)))
+            while ant_pile:
+                #Get the point pair
+                p1, p2 = ant_pile.popleft()
+                #find the diagonals
+                x1, y1 = p1
+                x2, y2 = p2
+                dx = abs(x2 - x1)
+                dy = abs(y2 - y1)
+                if check_one(x1, y1, x2, y2, dx, dy):
+                    positions += 1
+                if check_two(x1, y1, x2, y2, dx, dy):
+                    positions += 1
 
+    return positions
 
     #Needs
       #1.Function for identifying the different type of antennas. 
