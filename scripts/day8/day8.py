@@ -6,13 +6,40 @@ sys.path.append(root_folder)
 from utils.support import log_time, _877_cache_now, logger, console
 from utils import support
 from datetime import datetime
-
+from collections import deque
 #Set day/year global variables
 DAY:int = 8 #datetime.now().day
 YEAR:int = 2024 #datetime.now().year
 
-def problemsolver(arr:list, part:int):
-    pass
+def problemsolver(grid:list, part:int):
+    def parse_input():
+        antenna = {}
+        for x in range(len(grid)):
+            for y in range(len(grid[x])):
+                if grid[x][y] != ".":
+                    if not grid[x][y] in antenna.keys():
+                        antenna[grid[x][y]] = set()
+                    antenna[grid[x][y]].add((x,y))
+        return antenna
+    def diagonal_ray():
+        pass
+    
+    manual = parse_input()
+    #create the antinodes and then check which locations exist in the antenna["#"] dict
+    for ant_type, locs in manual.items():
+        ant_pile = deque(locs)
+        while ant_pile:
+            
+
+
+    #Needs
+      #1.Function for identifying the different type of antennas. 
+      #2.Function that can determine if there is a straight line. No clue here. 
+      #3.Data Container..  
+        #Dict of sets?  Sounds fun. 
+      #Our job is to count the number of locations that could contain an antinode. 
+      #So we need validation functions
+
 
 @log_time
 def part_A():
