@@ -18,8 +18,8 @@ The .gitignore will ignore all text files / (and other formats) so it won't get 
 | 03  | ⭐⭐ | [Day3](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day3/day3.py) |[Mull it over](https://adventofcode.com/2024/day/3) | 28 ms | 37 ms | 100 |
 | 04  | ⭐⭐ | [Day4](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day4/day4.py) |[Ceres Search](https://adventofcode.com/2024/day/4) |  82 ms | 46 ms | 127 |
 | 05  | ⭐⭐ | [Day5](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day5/day5.py) |[Print Queue](https://adventofcode.com/2024/day/5) |  42 ms | 62 ms | 85 |
-| 06  |  | [Day6](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day5/day5.py) |[Guard Gallivant](https://adventofcode.com/2024/day/6) |   ms |  ms |  |
-
+| 06  | ⭐ | [Day6](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day5/day5.py) |[Guard Gallivant](https://adventofcode.com/2024/day/6) |   ms |  ms |  |
+| 06  | ⭐⭐ | [Day7](https://github.com/Landcruiser87/AoC2024/blob/main/scripts/day7/day7.py) |[Bridge Repair](https://adventofcode.com/2024/day/7) |  6.25 sec | 5.9 MIN:joy: | 109 |
 #### For next year
 
 - [ ] Make a function that captures the output and updates the results table in the README. SORCERY :mage: :magic_wand: 
