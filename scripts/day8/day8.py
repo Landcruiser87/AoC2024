@@ -35,34 +35,71 @@ def problemsolver(grid:list, part:int):
             return False
         else:
             return True
-        
-    def pythagoras(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
+
+    def pythagoras(x1:int, y1:int, x2:int, y2:int):
         return sqrt((x2-x1)**2 + (y2-y1)**2)
     
-    def check_yoself(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
-        antinodes = manual["#"]
-        if (dx > 0) & (dy > 0) | (dx < 0) & (dy < 0):
-            anti_1 = (x1 + dx, y1 + dy)
-            anti_2 = (x2 - dx, y2 - dy)
-        elif (dx > 0) & (dy < 0):
-            anti_1 = (x1 + dx, y1 - dy)
-            anti_2 = (x2 - dx, y2 + dy)
-        elif (dx < 0) & (dy > 0):
-            anti_1 = (x1 + dx, y1 - dy)
-            anti_2 = (x2 - dx, y2 + dy)
-        
+    def slopecity(x1:int, y1:int, x2:int, y2:int):
+        return  -(y2-y1) / (x2-x1)
+    
+    def generate_diags(x1:int, y1:int, x2:int, y2:int, slope:float):
+        pass
 
+    def check_yoself(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int, grid):
+        #Idea
+        #Caculate the distance the points are apart
+        #Check their slope and which point is greater
+        #Create diagonals  
+        #Meet conditionals
+        #Do happy dance.
+
+        locations = 0
+        dist = pythagoras(x1, y1, x2, y2)
+        slope = slopecity(x1, y1, x2, y2)
+
+        if slope > 0:
+            if (x1 > x2) & (y1 < y2):
+                anti_1 = (x1 + dx, y1 - dy) #lowerleft x1
+                anti_2 = (x2 - dx, y2 + dy)
+
+            elif (x2 > x1) & (y2 < y1):
+                anti_1 = (x1 - dx, y1 + dy) #upperright x1
+                anti_2 = (x2 + dx, y2 - dy)
+
+        elif slope < 0:
+            if (x1 < x2) & (y1 < y2):
+                anti_1 = (x1 - dx, y1 - dy) #upperleft x1
+                anti_2 = (x2 + dx, y2 + dy)
+
+            elif (x2 < x1) & (y2 < y1):
+                anti_1 = (x2 - dx, y2 - dy)
+                anti_2 = (x1 + dx, y1 + dy) #lowerright x1
+                
+
+        elif slope == 0:
+            logger.critical("what the straightline is this")
+        #NOTE - Could be an edge case where you have a straight line. 
+
+        else:
+            logger.warning(f"Somethings hosed if you get here")
+            raise ValueError("Fix yo shiz!")
+        
         #Checks
         #1. I only need one antinode on the board.
         #2. for the one that is on the board. 
-            #it needs to be twice as far away from the opposite node. (well done eric.  this is hard. )
-        for node in [anti_1, anti_2]:
-            dist_uno = pythagoras(x1, y1, node[0], node[1], dx, dy)
-            dist_dos = pythagoras(x2, y2, node[0], node[1], dx, dy)
-            if onboard(node):
-                logger.info('yay')
-        
+            #it needs to be twice as far away from the opposite node. (well done eric.  this is hard)
+        for antinode in [anti_1, anti_2]:
+            dist_uno = pythagoras(x1, y1, antinode[0], antinode[1])
+            dist_dos = pythagoras(x2, y2, antinode[0], antinode[1])
+            cond1 = onboard(antinode)
+            cond2 = dist == 2 * dist_uno
+            cond3 = dist == 2 * dist_dos
+            cond4 = antinode in manual.values()
+            if cond1 and (cond2 | cond3) and (cond4):
+                locations += 1
 
+        return locations
+    
     manual = parse_input()
     positions = 0
     #create the antinodes and then check which locations exist in the antenna["#"] dict
@@ -75,10 +112,9 @@ def problemsolver(grid:list, part:int):
                 #find the diagonals
                 x1, y1 = p1
                 x2, y2 = p2
-                dx = x2 - x1
-                dy = y2 - y1
-                if check_yoself(x1, y1, x2, y2, dx, dy):
-                    positions += 1
+                dx = abs(x2 - x1)
+                dy = abs(y2 - y1)
+                positions += check_yoself(x1, y1, x2, y2, dx, dy, grid) #take grid out.  Eventually
 
     return positions
 
