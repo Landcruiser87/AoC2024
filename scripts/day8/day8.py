@@ -61,13 +61,13 @@ def main():
     # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
-    resultB = part_B()
-    logger.info(f"part B solution: \n{resultB}\n")
-    # support.submit_answer(DAY, YEAR, 2, resultB)
+    # resultB = part_B()
+    # logger.info(f"part B solution: \n{resultB}\n")
+    # # support.submit_answer(DAY, YEAR, 2, resultB)
 
-    #Recurse lines of code
-    LOC = support.recurse_dir(f'./scripts/day{DAY}/')
-    logger.info(f"Lines of code \n{LOC}")
+    # #Recurse lines of code
+    # LOC = support.recurse_dir(f'./scripts/day{DAY}/')
+    # logger.info(f"Lines of code \n{LOC}")
 
     #Delete the cache after submission
     _877_cache_now(".cache", False)
