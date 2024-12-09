@@ -8,11 +8,11 @@ from utils import support
 from datetime import datetime
 
 #Set day/year global variables
-DAY:int = 1 #datetime.now().day
-YEAR:int = 2023 #datetime.now().year
+DAY:int = 8 #datetime.now().day
+YEAR:int = 2024 #datetime.now().year
 
-# def problemsolver(arr:list, part:int):
-#     pass
+def problemsolver(arr:list, part:int):
+    pass
 
 @log_time
 def part_A():
@@ -25,9 +25,9 @@ def part_A():
     # console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 1)
+    testcase = problemsolver(testdata, 1)
     #Assert testcase
-    assert testcase == "", f"Test case A failed returned:{testcase}"
+    assert testcase == 14, f"Test case A failed returned:{testcase}"
     # logger.info(f"Test case:{testcase} pass for part A")
     #Solve puzzle with full dataset
     answerA = "" #problemsolver(data, 1)
@@ -78,3 +78,19 @@ if __name__ == "__main__":
 ########################################################
 #Notes
 #Part A Notes
+
+#In particular, an antinode occurs at any point that is perfectly in line with
+#two antennas of the same frequency
+    #but only when one of the antennas is twice as far away as the other
+
+# oooo Antenna town!  This one sounds quite fun and I think we're going to have
+# to do some diagonal raycasting.  Still dont' quite understand how to draw
+# the antinodes yet. 
+# if a node is drawn, the exact opposite delta difference in distance is wehre
+# to place an antinode. 
+
+
+#freqs can be 
+#1. single lowercase letter
+#2. single uppercase letter
+#3. digit
