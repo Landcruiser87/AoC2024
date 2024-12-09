@@ -20,14 +20,6 @@ def problemsolver(arr:list, part:int):
             total, part = line.strip().split(":")
             calibrations[total] = part.strip().split()
         return calibrations
-    
-    def domath(left:int, right:int, operator:str):
-        if operator == "*":
-            left *= right
-        elif operator == "+":
-            left += right
-
-        return left
         
     def recursive_add(mathstr:str, n_idx:int=0, total:int=0):
         #Exit criteria
@@ -51,7 +43,7 @@ def problemsolver(arr:list, part:int):
             #Do some weird fuckin math
             total = domath(int(left), int(right), samp[op_id])
             #select next operator index to start from
-            n_idx = op_id #BUG could be here to.  This indexes the first operator in the input string as your reference point for stepping farther down into the recursion.
+            n_idx = op_id
 
         #If string has only one operator left.  (the rightmost)
         elif len(ops) == 1:
@@ -67,10 +59,22 @@ def problemsolver(arr:list, part:int):
             #Could be in my exit routine here.  might be skipping something
         
         return recursive_add(mathstr[n_idx+1:], n_idx, total)
+    
+    def domath(left:int, right:int, operator:str):
+        if operator == "*":
+            left *= right
+        elif operator == "+":
+            left += right
+        elif operator == "|":
+            left = int(str(left) + str(right))
+        return left
         
     cals = parse_input(arr)    
     test_vals = 0
-    operators = ["+", "*"]
+    if part == 2:
+        operators = ["+", "*", "|"]
+    else:
+        operators = ["+", "*"]
     farts = [(len(str(x)),x) for x in cals.keys()]
     farts = sorted(farts, key=lambda x:x[0], reverse=True)
     # logger.warning(f"Longest key = {farts[0]}")
@@ -80,7 +84,10 @@ def problemsolver(arr:list, part:int):
             equation = parts[0]
             for num, op in zip(parts[1:], possible):
                 equation += op + num
-            assert " ".join(parts) == equation.replace("*", " ").replace("+", " ")
+            if part == 1:
+                assert " ".join(parts) == equation.replace("*", " ").replace("+", " ")
+            elif part == 2:
+                assert " ".join(parts) == equation.replace("*", " ").replace("+", " ").replace("|", " ")
             wrong_math = recursive_add(equation)
             if np.int64(test_val) == wrong_math:
                 logger.warning(f"Equation: {test_val:<{longest}}== {equation}")
@@ -115,15 +122,15 @@ def part_B():
     _877_cache_now()
     #Pull puzzle description and testdata
     tellstory, testdata = support.pull_puzzle(DAY, YEAR, 2)
-    # console.log(f"{tellstory}")
+    console.log(f"{tellstory}")
     # [logger.info(row) for row in testdata]
     #Solve puzzle w/testcase
-    testcase = "" #problemsolver(testdata, 2)
+    testcase = problemsolver(testdata, 2)
     #Assert testcase
-    assert testcase == "", f"Test case B failed returned:{testcase}"
+    assert testcase == 11387, f"Test case B failed returned:{testcase}"
     # logger.info(f"Test case:{testcase} pass for part B")
     #Solve puzzle with full dataset
-    answerB = "" #problemsolver(data, 2)
+    answerB = problemsolver(data, 2)
     return answerB
 
 def main():
@@ -138,11 +145,11 @@ def main():
         exit()
     else:
         logger.info(f"part A solution: \n{resultA}\n")
-    support.submit_answer(DAY, YEAR, 1, resultA)
+    # support.submit_answer(DAY, YEAR, 1, resultA)
 
     #Solve part B
-    # resultB = part_B()
-    # logger.info(f"part B solution: \n{resultB}\n")
+    resultB = part_B()
+    logger.info(f"part B solution: \n{resultB}\n")
     # support.submit_answer(DAY, YEAR, 2, resultB)
 
     #Recurse lines of code
@@ -166,4 +173,3 @@ if __name__ == "__main__":
 # First idea is to recursively split the string on its operators.  
 # Passing test cases but first submission is too low.
 # 
-#8400518384267 is too low
