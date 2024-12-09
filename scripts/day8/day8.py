@@ -8,6 +8,7 @@ from utils import support
 from datetime import datetime
 from collections import deque
 from itertools import combinations
+from math import sqrt
 
 #Set day/year global variables
 DAY:int = 8 #datetime.now().day
@@ -34,21 +35,33 @@ def problemsolver(grid:list, part:int):
             return False
         else:
             return True
-    def check_one(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
-        poundtown = manual["#"]
-        #SW -> NE
-        anti_1 = (x1 + dx, y1 - dy)
-        anti_2 = (x2 - dx, y2 + dy)
-        if onboard(anti_1) and onboard(anti_2) and (anti_1 in poundtown) and (anti_2 in poundtown):
-            return True
         
-    def check_two(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
-        poundtown = manual["#"]
-        #NW -> SE
-        anti_3 = (x1 - dx, y1 + dy)
-        anti_4 = (x2 + dx, y2 - dy)
-        if onboard(anti_3) and onboard(anti_4) and (anti_3 in poundtown) and (anti_4 in poundtown):
-            return True
+    def pythagoras(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
+        return sqrt((x2-x1)**2 + (y2-y1)**2)
+    
+    def check_yoself(x1:int, y1:int, x2:int, y2:int, dx:int, dy:int):
+        antinodes = manual["#"]
+        if (dx > 0) & (dy > 0) | (dx < 0) & (dy < 0):
+            anti_1 = (x1 + dx, y1 + dy)
+            anti_2 = (x2 - dx, y2 - dy)
+        elif (dx > 0) & (dy < 0):
+            anti_1 = (x1 + dx, y1 - dy)
+            anti_2 = (x2 - dx, y2 + dy)
+        elif (dx < 0) & (dy > 0):
+            anti_1 = (x1 + dx, y1 - dy)
+            anti_2 = (x2 - dx, y2 + dy)
+        
+
+        #Checks
+        #1. I only need one antinode on the board.
+        #2. for the one that is on the board. 
+            #it needs to be twice as far away from the opposite node. (well done eric.  this is hard. )
+        for node in [anti_1, anti_2]:
+            dist_uno = pythagoras(x1, y1, node[0], node[1], dx, dy)
+            dist_dos = pythagoras(x2, y2, node[0], node[1], dx, dy)
+            if onboard(node):
+                logger.info('yay')
+        
 
     manual = parse_input()
     positions = 0
@@ -62,11 +75,9 @@ def problemsolver(grid:list, part:int):
                 #find the diagonals
                 x1, y1 = p1
                 x2, y2 = p2
-                dx = abs(x2 - x1)
-                dy = abs(y2 - y1)
-                if check_one(x1, y1, x2, y2, dx, dy):
-                    positions += 1
-                if check_two(x1, y1, x2, y2, dx, dy):
+                dx = x2 - x1
+                dy = y2 - y1
+                if check_yoself(x1, y1, x2, y2, dx, dy):
                     positions += 1
 
     return positions
